@@ -1,0 +1,70 @@
+#ap_answers {
+    border-collapse: collapse;
+    table-layout: fixed;
+    padding: 10px;
+    width: 100%;
+}
+
+#ap_questiontitle {
+    text-align: center;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
+
+#ap_answercount {
+    text-align: left;
+    display: inline-block;
+    vertical-align: top;
+    width: 20%;
+}
+
+#ap_views {
+    text-align: left;
+    vertical-align: top;
+    display: inline-block;
+    width: 20%;
+}
+
+#ap_questiontext {
+    text-align: left;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
+
+#ap_askedby {
+    text-align: right;
+    display: inline-block;
+    width: 20%;
+    vertical-align: bottom;
+}
+
+.aRow {
+    border-bottom: 1px dotted black;
+}
+
+.aTD {
+    padding: 15px;
+}
+
+.aAns {
+    width: 70%;
+    overflow-wrap: break-word;
+}
+
+.aCred {
+    width: 20%;
+    vertical-align: middle;
+    text-align: right;
+    padding-right:40px
+}
+
+#ap_answerbutton {
+    padding: 6px;
+    display: inline-block;
+    font-size: medium;
+    background-color: cornflowerblue;
+    color: white;
+    border-color: cornflowerblue;
+}
