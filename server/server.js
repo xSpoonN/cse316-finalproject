@@ -4,8 +4,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const Questions = require('./models/questions')
-const Answers = require('./models/answers') // eslint-disable-line no-unused-vars
+const Answers = require('./models/answers')
 const Tags = require('./models/tags')
+const Comments = require('./models/comments') // eslint-disable-line no-unused-vars
+const Users = require('./models/users') // eslint-disable-line no-unused-vars
 
 // Create a new Express app
 const app = express()

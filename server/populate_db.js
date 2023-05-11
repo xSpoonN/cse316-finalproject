@@ -11,6 +11,8 @@ if (!userArgs[0].startsWith('mongodb')) {
 const Tag = require('./models/tags')
 const Answer = require('./models/answers')
 const Question = require('./models/questions')
+const User = require('./models/users')
+const Comment = require('./models/comments')
 
 const mongoose = require('mongoose')
 const mongoDB = userArgs[0]

@@ -14,6 +14,10 @@ const AnswerSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  url: String
+  url: String,
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }]
 })
 module.exports = mongoose.model('Answer', AnswerSchema)

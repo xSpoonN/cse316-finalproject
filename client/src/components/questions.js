@@ -55,6 +55,7 @@ export default function Questions ({ searchQuery, fun }) {
   const [sortOrder, setSortOrder] = useState('Newest')
   const [questionList, setQuestionList] = useState([])
   const [qCount, setQCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1) // eslint-disable-line no-unused-vars
 
   async function search (query, q, t) {
     if (!q) q = await modle.getQuestions()
@@ -94,6 +95,9 @@ export default function Questions ({ searchQuery, fun }) {
     return out
   }
 
+  const isFirstPage = currentPage === 1
+  const isLastPage = currentPage * 5 >= qCount
+
   useEffect(() => {
     async function fetchQuestions (qList) {
       if (!qList) qList = await modle.getQuestions()
@@ -125,12 +129,22 @@ export default function Questions ({ searchQuery, fun }) {
         )
       })
       qL.unshift(<tr className="qRow" key="RowFiller"></tr>) /* Adds a blank row at the top to get the top border */
-      setQuestionList(qL)
       setQCount(qL.filter(q => q).length)
-      return qL
+      const startIndex = (currentPage - 1) * ((isFirstPage) ? 6 : 5)
+      const pageQuestions = qL.slice(startIndex, startIndex + ((isFirstPage) ? 6 : 5))
+      setQuestionList(pageQuestions)
+      return pageQuestions
     }
     fetchQuestions()
-  }, [sortOrder])
+  }, [sortOrder, currentPage])
+
+  function handleNextPage () {
+    setCurrentPage((prev) => prev + 1)
+  }
+
+  function handlePrevPage () {
+    setCurrentPage((prev) => prev - 1)
+  }
 
   async function compareActive (a, b) {
     let aLatest = 0
@@ -163,6 +177,10 @@ export default function Questions ({ searchQuery, fun }) {
       <table className="questions">
         <tbody>{questionList}</tbody>
       </table>
+      <div>
+        <button id="prevbutt" className="questionsort" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+        <button id="nextbutt" className="questionsort" onClick={handleNextPage} disabled={isLastPage}>Next</button>
+      </div>
     </div>
   )
 }
