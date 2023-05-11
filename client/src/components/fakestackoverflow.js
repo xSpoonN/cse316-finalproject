@@ -6,6 +6,7 @@ import PostQuestion from './questionform.js'
 import Answers from './answers.js'
 import AllTags from './alltags.js'
 import AnswerForm from './answerform.js'
+import LoginPage from './login.js'
 import '../stylesheets/fakeStackOverflow.css'
 import '../stylesheets/questions.css'
 import '../stylesheets/answerform.css'
@@ -110,6 +111,9 @@ Page.propTypes = {
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Questions')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  if (!isLoggedIn) return <LoginPage setIsLoggedIn={setIsLoggedIn}/>
 
   return (
     <div>
