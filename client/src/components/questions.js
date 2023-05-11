@@ -7,6 +7,7 @@ const modle = require('../models/axiosmodel.js')
 export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage }) {
   const [tagNames, setTagNames] = useState([])
   const setPage = (qid) => () => {
+    modle.addViews(qid)
     setActivePage(qid)
   }
 
