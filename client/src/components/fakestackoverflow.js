@@ -42,12 +42,11 @@ Header.propTypes = {
   loggedIn: PropTypes.bool.isRequired
 }
 
-export function Sidebar ({ pageChange, activePage, searchQuery, setSearchQuery, userEmail }) {
+export function Sidebar ({ pageChange, activePage, setSearchQuery, userEmail, logout }) {
   const handlePageChange = (page) => {
     if (page === 'Questions') setSearchQuery('')
     pageChange(page)
   }
-  // Todo: make Profile invisible if logged in as a guest
   return (
     <div id="sidebar">
       <a className={activePage === 'Questions' ? 'sidebutt active' : 'sidebutt'} id="questiontab" onClick={() => handlePageChange('Questions')}>Questions</a>
@@ -55,15 +54,16 @@ export function Sidebar ({ pageChange, activePage, searchQuery, setSearchQuery, 
       {userEmail !== 'guest' &&
         <a className={activePage === 'Profile' ? 'sidebutt active' : 'sidebutt'} id="profiletab" onClick={() => handlePageChange('Profile')}>Profile</a>
       }
+      <a className={'sidebutt'} id="logouttab" onClick={logout}>Logout</a>
     </div>
   )
 }
 Sidebar.propTypes = {
   pageChange: PropTypes.func.isRequired,
   activePage: PropTypes.string.isRequired,
-  searchQuery: PropTypes.string,
   setSearchQuery: PropTypes.func.isRequired,
-  userEmail: PropTypes.string.isRequired
+  userEmail: PropTypes.string.isRequired,
+  logout: PropTypes.func.isRequired
 }
 
 export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn, setUsername, username, setUserEmail }) {
@@ -161,6 +161,13 @@ export default function fakeStackOverflow () {
   const [userEmail, setUserEmail] = useState('')
   const [username, setUsername] = useState('')
 
+  const logout = () => {
+    setUserEmail('')
+    setUsername('')
+    setIsLoggedIn(false)
+    setActivePage('Landing')
+  }
+
   return (
     <div>
       {<Header
@@ -175,6 +182,7 @@ export default function fakeStackOverflow () {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           userEmail={userEmail}
+          logout={logout}
         />}
       <div className="content">
         <Page
