@@ -20,6 +20,10 @@
     resize:vertical;
 }
 
+#prevbutt2 {
+    margin-left:30px
+}
+
 #ap_commentbutton {
     padding: 6px;
     display: inline-block;
@@ -28,6 +32,7 @@
     color: white;
     border-color: cornflowerblue;
     margin-left:40px;
+    transform: translate(0, -50%);
 }
 
 #ap_answercount {
