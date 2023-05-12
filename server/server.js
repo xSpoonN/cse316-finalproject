@@ -212,16 +212,15 @@ app.post('/tags', async (req, res) => {
 app.post('/userLogin', async (req, res) => {
   console.log('User GET login request received')
   try {
-    const user = await Users.findOne(req.body.email)
-    if (user == null) {
+    const user = await Users.findOne({email: req.body.email})
+    console.log(user);
+    if (!user) {
       return res.status(400).json({ message: 'Cannot find user' })
     } else {
       bcrypt.compare(req.body.password, user.password, async function (err, result) {
         if (err) {
           return res.status(400).json({ message: err.message })
         } else if (result == true) {
-          const hashUser = await bcrypt.hash(user._id, saltRounds)
-          req.session.user = hashUser
           return res.status(200).json({ message: 'User logged in', token: hashUser })
         } else {
           return res.status(400).json({ message: 'Incorrect password' })

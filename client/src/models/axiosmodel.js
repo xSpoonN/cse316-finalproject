@@ -66,10 +66,11 @@ export function loginUser (email, password) {
     email,
     password
   }).then((response) => {
-    console.log(response)
-    return response
+    /* console.log(response.data) */
+    return response.data
   }).catch((e) => {
     console.error(e)
+    throw e
   })
 }
 

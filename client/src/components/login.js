@@ -14,22 +14,23 @@ export default function LoginPage ({ setIsLoggedIn }) {
     try {
       // Perform login action using user credentials
       const resp = await modle.loginUser(email, password)
-      console.log(resp)
+      /* console.log(resp) */
       if (resp.status === 200) {
         // Set the login status to true
-        localStorage.setItem('token', resp.data.token)
         setIsLoggedIn(true)
       } else {
         setError(resp.data.message)
       }
     } catch (error) {
+      console.log(error)
       if (error.response && error.response.status === 401) {
         // Unauthorized login error occurred
         setError('Invalid email or password')
+      } else if (error.response && error.response.status === 400) {
+        setError('Invalid User')
       } else {
         // Handle other errors
         setError('An error occurred')
-        console.error(error)
       }
     }
   }
