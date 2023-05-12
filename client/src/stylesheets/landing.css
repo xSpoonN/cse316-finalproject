@@ -2,8 +2,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 60vh;
   gap: 10px;
+  position: relative;
+  left: -12.5%;
 }
 
 .landingbutt {
