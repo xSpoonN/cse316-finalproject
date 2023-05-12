@@ -86,6 +86,28 @@ export function getAnswers () {
 export function getCommentsByAID (aid) {
   return axios.get(`http://localhost:8000/comments/${aid}`).then((response) => {
     /* console.log(response.data) */
+    return response
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
+export function getCommentByID (cid) {
+  return axios.get(`http://localhost:8000/comment/${cid}`).then((response) => {
+    /* console.log(response.data) */
+    return response
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
+export function addComment (aid, text, user) {
+  return axios.post('http://localhost:8000/comments', {
+    text,
+    aid,
+    user
+  }).then((response) => {
+    console.log(response.data)
     return response.data
   }).catch((e) => {
     console.error(e)

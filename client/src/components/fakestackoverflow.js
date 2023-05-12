@@ -118,7 +118,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
         <>
         <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
         <br />
-        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')}/>
+        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email}/>
         </>
       )
     case 'PostAnswer': /* console.log('Switching to PostAnswer') */

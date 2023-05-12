@@ -252,6 +252,7 @@ app.post('/users', async (req, res) => {
   })
 })
 
+/* Get User by Email */
 app.get('/users/:email', async (req, res) => {
   console.log('User GET request received')
   try {
@@ -264,13 +265,47 @@ app.get('/users/:email', async (req, res) => {
   }
 })
 
+/* Get Comments by Answer ID */
 app.get('/comments/:aid', async (req, res) => {
   console.log('Comments GET request received')
   try {
-    const comments = await Comments.find({ans_id: req.params.aid})
-    res.json(comments)
+    /* const comments = await Comments.find({ans_id: req.params.aid}) */
+    const ans = await Answers.findById(req.params.aid)
+    res.json(ans.comments)
   } catch (err) {
     res.status(500).json({ message: err.message })
+  }
+})
+
+app.get('/comment/:cid', async (req, res) => {
+  console.log('Comment GET request received')
+  try {
+    const comment = await Comments.findById(req.params.cid)
+    res.json(comment)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
+/* Add new Comment */
+app.post('/comments', async (req, res) => {
+  console.log('Comment POST request received')
+  console.log(req.body)
+  const comment = new Comments({
+    text: req.body.text,
+    ans_id: req.body.aid,
+    cum_by: req.body.user,
+    cum_date_time: Date.now()
+  })
+  try {
+    const newComment = await comment.save()
+    await Answers.findOneAndUpdate(
+      {_id: req.body.aid},
+      {$push: {comments: newComment._id}}
+    )
+    res.status(201).json(newComment)
+  } catch (err) {
+    res.status(400).json({ message: err.message })
   }
 })
 
