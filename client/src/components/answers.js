@@ -12,6 +12,10 @@ function replaceLinks (text) {
 export default function Answers ({ qid, gotoPostAnswerPage }) {
   const [questionData, setQuestionData] = useState(null)
   const [answers, setAnswers] = useState([])
+  const [currentPage, setCurrentPage] = useState(1) // eslint-disable-line no-unused-vars
+
+  const isFirstPage = currentPage === 1
+  const isLastPage = answers === undefined ? true : currentPage * 5 >= answers.length
 
   useEffect(() => {
     async function fetchData () {
@@ -19,10 +23,20 @@ export default function Answers ({ qid, gotoPostAnswerPage }) {
       setAnswers((await modle.getAnswersByQID(qid)).sort((a, b) => {
         return new Date(b.ans_date_time) - new Date(a.ans_date_time)
       }))
-      modle.addViews(qid)
+      // modle.addViews(qid)
     }
     fetchData()
-  }, [qid])
+  }, [qid, currentPage])
+
+  function handleNextPage () {
+    // modle.removeView(qid)
+    setCurrentPage(p => p + 1)
+  }
+
+  function handlePrevPage () {
+    // modle.removeView(qid)
+    setCurrentPage(p => p - 1)
+  }
 
   if (!questionData) return <p>Loading...</p>
 
@@ -33,7 +47,7 @@ export default function Answers ({ qid, gotoPostAnswerPage }) {
       <p id="ap_answercount"><b>{questionData.answers.length} answers</b></p>
       <p id="ap_questiontitle"><b>{questionData.title}</b></p>
       <br />
-      <p id="ap_views"><b>{questionData.views + 1} views</b></p>
+      <p id="ap_views"><b>{questionData.views} views</b></p>
       <p id="ap_questiontext" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>
       <p id="ap_askedby">
         <b>{questionData.asked_by}</b> asked<br />
@@ -46,11 +60,15 @@ export default function Answers ({ qid, gotoPostAnswerPage }) {
             <td className="aTD aAns"></td>
             <td className="aTD aCred"></td>
           </tr>
-          {answers.map((answer) => (
+          {answers.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((answer) => (
             <Answer key={answer._id} answer={answer} />
           ))}
         </tbody>
       </table>
+      <div>
+        <button id="prevbutt" className="answersort" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+        <button id="nextbutt" className="answersort" onClick={handleNextPage} disabled={isLastPage}>Next</button>
+      </div>
       <br />
       {answers.length === 0 && (<p id="ap_noanswers"><i>No Answers Yet...</i></p>)}
       <button id="ap_answerbutton" onClick={gotoPostAnswerPage}>Answer Question</button>
