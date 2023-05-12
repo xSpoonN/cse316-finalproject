@@ -42,16 +42,17 @@ Header.propTypes = {
   loggedIn: PropTypes.bool.isRequired
 }
 
-export function Sidebar ({ pageChange, activePage, setSearchQuery, userEmail, logout }) {
+export function Sidebar ({ pageChange, activePage, setSearchQuery, user, logout }) {
   const handlePageChange = (page) => {
     if (page === 'Questions') setSearchQuery('')
     pageChange(page)
   }
+  console.log(user)
   return (
     <div id="sidebar">
       <a className={activePage === 'Questions' ? 'sidebutt active' : 'sidebutt'} id="questiontab" onClick={() => handlePageChange('Questions')}>Questions</a>
       <a className={activePage === 'AllTags' ? 'sidebutt active' : 'sidebutt'} id="tagtab" onClick={() => handlePageChange('AllTags')}>Tags</a>
-      {userEmail !== 'guest' &&
+      {user !== undefined &&
         <a className={activePage === 'Profile' ? 'sidebutt active' : 'sidebutt'} id="profiletab" onClick={() => handlePageChange('Profile')}>Profile</a>
       }
       <a className={'sidebutt'} id="logouttab" onClick={logout}>Logout</a>
@@ -62,11 +63,11 @@ Sidebar.propTypes = {
   pageChange: PropTypes.func.isRequired,
   activePage: PropTypes.string.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
-  userEmail: PropTypes.string.isRequired,
+  user: PropTypes.object,
   logout: PropTypes.func.isRequired
 }
 
-export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn, setUsername, username, setUserEmail }) {
+export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn, user, setUser }) {
   const switchToPage = (page) => () => setActivePage(page)
   const showAnswer = () => (id) => {
     setQid(id)
@@ -79,14 +80,13 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   const [currentQid, setQid] = useState('q1')
 
   const loginGuest = () => {
-    setUserEmail('guest')
+    setUser(undefined)
     setIsLoggedIn(true)
     switchToPage('Questions')()
   }
 
-  const loginUser = (name, email) => {
-    setUsername(name)
-    setUserEmail(email)
+  const loginUser = (user) => {
+    setUser(user)
     setIsLoggedIn(true)
     switchToPage('Questions')()
   }
@@ -94,7 +94,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   switch (activePage) {
     case 'Landing': /* console.log('Switching to Landing') */
       return (
-        <LandingPage handleSignup={switchToPage('Signup')} handleGuest={loginGuest} handleLogin={switchToPage('Login')} />
+        <LandingPage handleLogin={switchToPage('Login')} handleSignup={switchToPage('Signup')} handleGuest={loginGuest} />
       )
     case 'Signup': /* console.log('Switching to Signup') */
       return (
@@ -138,7 +138,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile username={username} />
+        <Profile user={user} />
         </>
       )
   }
@@ -149,21 +149,18 @@ Page.propTypes = {
   setActivePage: PropTypes.func.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
   setIsLoggedIn: PropTypes.func.isRequired,
-  setUsername: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  setUserEmail: PropTypes.func.isRequired
+  user: PropTypes.object,
+  setUser: PropTypes.func.isRequired
 }
 
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Landing')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userEmail, setUserEmail] = useState('')
-  const [username, setUsername] = useState('')
+  const [user, setUser] = useState(undefined)
 
   const logout = () => {
-    setUserEmail('')
-    setUsername('')
+    setUser(undefined)
     setIsLoggedIn(false)
     setActivePage('Landing')
   }
@@ -181,7 +178,7 @@ export default function fakeStackOverflow () {
           activePage={activePage}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          userEmail={userEmail}
+          user={user}
           logout={logout}
         />}
       <div className="content">
@@ -191,9 +188,8 @@ export default function fakeStackOverflow () {
           setActivePage={setActivePage}
           setSearchQuery={setSearchQuery}
           setIsLoggedIn={setIsLoggedIn}
-          setUsername={setUsername}
-          username={username}
-          setUserEmail={setUserEmail}
+          user={user}
+          setUser={setUser}
         />
       </div>
     </div>
