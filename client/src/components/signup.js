@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
-export default function SignupPage ({ setIsLoggedIn }) {
+export default function SignupPage ({ gotoLogin }) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -37,7 +37,7 @@ export default function SignupPage ({ setIsLoggedIn }) {
       // Save user information in the database
       await modle.addUser(email, username, password)
       // Set the login status to true
-      setIsLoggedIn(true)
+      gotoLogin()
     } catch (error) {
       if (error.response && error.response.status === 400) {
         // Duplicate email error occurred
@@ -79,5 +79,5 @@ export default function SignupPage ({ setIsLoggedIn }) {
   )
 }
 SignupPage.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired
+  gotoLogin: PropTypes.func.isRequired
 }

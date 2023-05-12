@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
-export default function LoginPage ({ setIsLoggedIn }) {
+export default function LoginPage ({ setIsLoggedIn, setUsername, setUserEmail }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -51,7 +51,8 @@ export default function LoginPage ({ setIsLoggedIn }) {
     </div>
   )
 }
-
 LoginPage.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired
+  setIsLoggedIn: PropTypes.func.isRequired,
+  setUsername: PropTypes.func.isRequired,
+  setUserEmail: PropTypes.func.isRequired
 }
