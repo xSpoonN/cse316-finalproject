@@ -20,9 +20,9 @@ const UserSchema = new mongoose.Schema({
     default: Date.now
   },
   url: String,
-  isadmin: {
-    type: Boolean,
-    default: false
+  type: {
+    type: String,
+    default: 'User'
   }
 })
 module.exports = mongoose.model('User', UserSchema)

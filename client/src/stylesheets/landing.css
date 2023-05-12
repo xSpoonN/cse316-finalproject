@@ -1,0 +1,11 @@
+.landingdiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 10px;
+}
+
+.landingbutt {
+  text-align: center;
+}
