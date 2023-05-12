@@ -306,18 +306,18 @@ export function formatDate (askDate, now = new Date()) { /* Formats a date */
   } else if (timeDiffInDays < 365) {
     const formattedTime = `${askDate
       .getHours()
-      .tostring()
-      .padStart(2, '0')}:${askDate.getMinutes().tostring().padStart(2, '0')}`
-    return `${askDate.toLocaleDatestring('en-US', {
+      .toString()
+      .padStart(2, '0')}:${askDate.getMinutes().toString().padStart(2, '0')}`
+    return `${askDate.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric'
     })} at ${formattedTime}`
   } else {
     const formattedTime = `${askDate
       .getHours()
-      .tostring()
-      .padStart(2, '0')}:${askDate.getMinutes().tostring().padStart(2, '0')}`
-    return `${askDate.toLocaleDatestring('en-US', {
+      .toString()
+      .padStart(2, '0')}:${askDate.getMinutes().toString().padStart(2, '0')}`
+    return `${askDate.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
