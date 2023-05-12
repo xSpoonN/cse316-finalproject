@@ -6,8 +6,9 @@ import PostQuestion from './questionform.js'
 import Answers from './answers.js'
 import AllTags from './alltags.js'
 import AnswerForm from './answerform.js'
-import SignupPage from './signup.js' // eslint-disable-line no-unused-vars
-import LandingPage from './landing.js' // eslint-disable-line no-unused-vars
+import SignupPage from './signup.js'
+import LandingPage from './landing.js'
+import Profile from './profile.js'
 import '../stylesheets/fakeStackOverflow.css'
 import '../stylesheets/questions.css'
 import '../stylesheets/answerform.css'
@@ -120,6 +121,12 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
         <>
         <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
         <AllTags setSearchQuery={setSearch} />
+        </>
+      )
+    case 'Profile': /* console.log('Switching to Profile') */
+      return (
+        <>
+        <Profile username={username} />
         </>
       )
   }
