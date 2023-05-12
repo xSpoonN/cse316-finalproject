@@ -170,6 +170,15 @@ export function getQuestions () { /* Gets all questions */
   })
 }
 
+export function getQuestionsByEmail (email) {
+  return axios.get(`http://localhost:8000/questions/${email}`).then((response) => {
+    /* console.log(response.data) */
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 export function getQuestion (qid) { /* Gets a question from an id */
   return axios.get(`http://localhost:8000/questions/${qid}`).then((response) => {
     console.log(response.data)
@@ -179,12 +188,13 @@ export function getQuestion (qid) { /* Gets a question from an id */
   })
 }
 
-export function addQuestion (title, text, tags, user) { /* Adds a question */
+export function addQuestion (title, text, tags, user, email) {
   return axios.post('http://localhost:8000/questions', {
     title,
     text,
     tags,
-    user
+    user,
+    email
   }).then((response) => {
     console.log(response.data)
     return response.data
