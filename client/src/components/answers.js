@@ -92,6 +92,11 @@ export function Answer ({ answer }) {
           {modle.formatDate(new Date(answer.ans_date_time))}
         </td>
       </tr>
+      <tr className="aComment">
+        <td>
+          <p>blahblah</p>
+        </td>
+      </tr>
     </>
   )
 }
