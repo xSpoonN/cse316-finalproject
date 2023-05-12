@@ -47,7 +47,7 @@ export default function Answers ({ qid, gotoPostAnswerPage }) {
       <p id="ap_answercount"><b>{questionData.answers.length} answers</b></p>
       <p id="ap_questiontitle"><b>{questionData.title}</b></p>
       <br />
-      <p id="ap_views"><b>{questionData.views + 1} views</b></p>
+      <p id="ap_views"><b>{questionData.views} views</b></p>
       <p id="ap_questiontext" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>
       <p id="ap_askedby">
         <b>{questionData.asked_by}</b> asked<br />
