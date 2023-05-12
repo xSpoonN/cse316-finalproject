@@ -67,7 +67,7 @@ export function loginUser (email, password) {
     password
   }).then((response) => {
     /* console.log(response.data) */
-    return response.data
+    return response
   }).catch((e) => {
     console.error(e)
     throw e

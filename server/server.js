@@ -221,7 +221,7 @@ app.post('/userLogin', async (req, res) => {
         if (err) {
           return res.status(400).json({ message: err.message })
         } else if (result == true) {
-          return res.status(200).json({ message: 'User logged in', token: hashUser })
+          return res.status(200).json({ message: 'User logged in', user: user })
         } else {
           return res.status(400).json({ message: 'Incorrect password' })
         }

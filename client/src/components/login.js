@@ -15,8 +15,11 @@ export default function LoginPage ({ setIsLoggedIn, setUsername, setUserEmail })
       // Perform login action using user credentials
       const resp = await modle.loginUser(email, password)
       /* console.log(resp) */
+      console.log(resp)
       if (resp.status === 200) {
         // Set the login status to true
+        setUsername(resp.data.user.username)
+        setUserEmail(resp.data.user.email)
         setIsLoggedIn(true)
       } else {
         setError(resp.data.message)
