@@ -6,15 +6,15 @@ import PostQuestion from './questionform.js'
 import Answers from './answers.js'
 import AllTags from './alltags.js'
 import AnswerForm from './answerform.js'
-import LoginPage from './login.js' // eslint-disable-line no-unused-vars
-import ButtonGroup from './landing.js' // eslint-disable-line no-unused-vars
+import SignupPage from './signup.js' // eslint-disable-line no-unused-vars
+import LandingPage from './landing.js' // eslint-disable-line no-unused-vars
 import '../stylesheets/fakeStackOverflow.css'
 import '../stylesheets/questions.css'
 import '../stylesheets/answerform.css'
 import '../stylesheets/answers.css'
 import '../stylesheets/alltags.css'
 
-export function Header ({ searchQueryChange }) {
+export function Header ({ searchQueryChange, loggedIn }) {
   const [searchQuery, setSearchQuery] = useState('')
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) searchQueryChange(searchQuery)
@@ -23,17 +23,18 @@ export function Header ({ searchQueryChange }) {
     <div className="header" id="header">
       {/* <img src="../../QueueUnderflow.png" alt="logo" style={{ height: '8%', width: 'auto', position: 'fixed', left: '10px' }}/> */}
       <h1 id="title">Queue Underflow</h1>
-      <input type="text"
+      {loggedIn && <input type="text"
       id="search"
       placeholder="Search ..."
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      onKeyDown={handleKeyDown}/>
+      onKeyDown={handleKeyDown}/>}
     </div>
   )
 }
 Header.propTypes = {
-  searchQueryChange: PropTypes.func.isRequired
+  searchQueryChange: PropTypes.func.isRequired,
+  loggedIn: PropTypes.bool.isRequired
 }
 
 export function Sidebar ({ pageChange, activePage, searchQuery, setSearchQuery }) {
@@ -55,7 +56,7 @@ Sidebar.propTypes = {
   setSearchQuery: PropTypes.func.isRequired
 }
 
-export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery }) {
+export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn }) {
   const switchToPage = (page) => () => setActivePage(page)
   const showAnswer = () => (id) => {
     setQid(id)
@@ -106,25 +107,30 @@ Page.propTypes = {
   searchQuery: PropTypes.string,
   activePage: PropTypes.string.isRequired,
   setActivePage: PropTypes.func.isRequired,
-  setSearchQuery: PropTypes.func.isRequired
+  setSearchQuery: PropTypes.func.isRequired,
+  setIsLoggedIn: PropTypes.func.isRequired
 }
 
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Questions')
-  // const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // if (!isLoggedIn) return <ButtonGroup />
+  // function handleSignup () {
+  //   return <SignupPage setIsLoggedIn={setIsLoggedIn}/>
+  // }
+
+  // if (!isLoggedIn) return <LandingPage handleSignup={handleSignup} />
 
   // eslint-disable-next-line
-  // if (!isLoggedIn) return <LoginPage setIsLoggedIn={setIsLoggedIn}/>
+  // if (!isLoggedIn) return <SignupPage setIsLoggedIn={setIsLoggedIn}/>
 
   return (
     <div>
-      <Header searchQueryChange={ setSearchQuery } className="header"/>
-      <Sidebar pageChange={(page) => setActivePage(page)} activePage={activePage} searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
+      {<Header searchQueryChange={setSearchQuery} loggedIn={isLoggedIn} className="header"/>}
+      {isLoggedIn && <Sidebar pageChange={(page) => setActivePage(page)} activePage={activePage} searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>}
       <div className="content">
-        <Page searchQuery={searchQuery} activePage={activePage} setActivePage={setActivePage} setSearchQuery={setSearchQuery}/>
+        <Page searchQuery={searchQuery} activePage={activePage} setActivePage={setActivePage} setSearchQuery={setSearchQuery} setIsLoggedIn={setIsLoggedIn}/>
       </div>
     </div>
   )

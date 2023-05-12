@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
-export default function LoginPage ({ setIsLoggedIn }) {
+export default function SignupPage ({ setIsLoggedIn }) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -52,7 +52,7 @@ export default function LoginPage ({ setIsLoggedIn }) {
 
   return (
     <div>
-      <h2>Login Page</h2>
+      <h2>Signup Page</h2>
       <div>
         <label>Username:</label>
         <input type="text" value={username} onChange={handleUsernameChange} />
@@ -78,6 +78,6 @@ export default function LoginPage ({ setIsLoggedIn }) {
     </div>
   )
 }
-LoginPage.propTypes = {
+SignupPage.propTypes = {
   setIsLoggedIn: PropTypes.func.isRequired
 }
