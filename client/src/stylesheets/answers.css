@@ -44,6 +44,10 @@
     border-bottom: 1px dotted black;
 }
 
+.aComment {
+    padding-left: 15px
+}
+
 .aTD {
     padding: 15px;
 }
