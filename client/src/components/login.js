@@ -18,7 +18,7 @@ export default function LoginPage ({ login }) {
       console.log(resp)
       if (resp.status === 200) {
         // Set the login status to true
-        login(resp.data.user.username, resp.data.user.email)
+        login(resp.data.user.email)
       } else {
         setError(resp.data.message)
       }
