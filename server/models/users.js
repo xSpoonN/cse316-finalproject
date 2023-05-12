@@ -1,10 +1,11 @@
-// Comment Document Schema
+// User Document Schema
 const mongoose = require('mongoose')
 // Define a schema
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   username: {
     type: String,

@@ -88,6 +88,19 @@ export function tagExists (tagName) {
   })
 }
 
+export function addUser (email, username, password) {
+  return axios.post('http://localhost:8000/users', {
+    email,
+    username,
+    password
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 export function addTag (tag) {
   return axios.post('http://localhost:8000/tags', {
     name: tag

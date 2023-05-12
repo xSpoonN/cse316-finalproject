@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+const modle = require('../models/axiosmodel.js')
 
 export default function LoginPage ({ setIsLoggedIn }) {
   const [username, setUsername] = useState('')
@@ -8,23 +9,12 @@ export default function LoginPage ({ setIsLoggedIn }) {
   const [passwordVerification, setPasswordVerification] = useState('')
   const [error, setError] = useState('')
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value)
-  }
+  const handleUsernameChange = (e) => setUsername(e.target.value)
+  const handleEmailChange = (e) => setEmail(e.target.value)
+  const handlePasswordChange = (e) => setPassword(e.target.value)
+  const handlePasswordVerificationChange = (e) => setPasswordVerification(e.target.value)
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value)
-  }
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value)
-  }
-
-  const handlePasswordVerificationChange = (event) => {
-    setPasswordVerification(event.target.value)
-  }
-
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
@@ -43,11 +33,21 @@ export default function LoginPage ({ setIsLoggedIn }) {
       return
     }
 
-    // Save user information in a database
-    // Replace with your own logic to save user information
-
-    // Set the login status to true
-    setIsLoggedIn(true)
+    try {
+      // Save user information in the database
+      await modle.addUser(email, username, password)
+      // Set the login status to true
+      setIsLoggedIn(true)
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // Duplicate email error occurred
+        setError('Email already exists')
+      } else {
+        // Handle other errors
+        setError('An error occurred')
+        console.error(error)
+      }
+    }
   }
 
   return (
