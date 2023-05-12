@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import modle from '../models/axiosmodel.js'
+const modle = require('../models/axiosmodel.js')
 
 export default function LoginPage ({ setIsLoggedIn }) {
   const [email, setEmail] = useState('')
@@ -14,6 +14,7 @@ export default function LoginPage ({ setIsLoggedIn }) {
     try {
       // Perform login action using user credentials
       const resp = await modle.loginUser(email, password)
+      console.log(resp)
       if (resp.status === 200) {
         // Set the login status to true
         localStorage.setItem('token', resp.data.token)

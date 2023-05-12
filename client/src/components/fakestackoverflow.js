@@ -7,6 +7,7 @@ import Answers from './answers.js'
 import AllTags from './alltags.js'
 import AnswerForm from './answerform.js'
 import SignupPage from './signup.js'
+import LoginPage from './login.js'
 import LandingPage from './landing.js'
 import Profile from './profile.js'
 import '../stylesheets/fakeStackOverflow.css'
@@ -86,11 +87,15 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   switch (activePage) {
     case 'Landing': /* console.log('Switching to Landing') */
       return (
-        <LandingPage handleSignup={switchToPage('Signup')} handleGuest={loginGuest} />
+        <LandingPage handleSignup={switchToPage('Signup')} handleGuest={loginGuest} handleLogin={switchToPage('Login')} />
       )
     case 'Signup': /* console.log('Switching to Signup') */
       return (
         <SignupPage setIsLoggedIn={setIsLoggedIn}/>
+      )
+    case 'Login': /* console.log('Switching to Login') */
+      return (
+        <LoginPage setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} setUserEmail={setUserEmail}/>
       )
     case 'Questions': /* console.log('Switching to Questions') */
       return (
