@@ -83,6 +83,15 @@ export function getAnswers () {
   })
 }
 
+export function getCommentsByAID (aid) {
+  return axios.get(`http://localhost:8000/comments/${aid}`).then((response) => {
+    /* console.log(response.data) */
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 export function getTags () {
   return axios.get('http://localhost:8000/tags').then((response) => {
     console.log(response.data)

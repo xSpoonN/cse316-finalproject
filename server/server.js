@@ -8,7 +8,7 @@ const session = require('express-session')
 const Questions = require('./models/questions')
 const Answers = require('./models/answers')
 const Tags = require('./models/tags')
-const Comments = require('./models/comments') // eslint-disable-line no-unused-vars
+const Comments = require('./models/comments')
 const Users = require('./models/users')
 
 const saltRounds = 10
@@ -264,6 +264,15 @@ app.get('/users/:email', async (req, res) => {
   }
 })
 
+app.get('/comments/:aid', async (req, res) => {
+  console.log('Comments GET request received')
+  try {
+    const comments = await Comments.find({ans_id: req.params.aid})
+    res.json(comments)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
 
 // Connect to the database
 mongoose.connect('mongodb://127.0.0.1:27017/fake_so')

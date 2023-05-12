@@ -81,6 +81,45 @@ Answers.propTypes = {
 }
 
 export function Answer ({ answer }) {
+  const [comments, setComments] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [newComment, setNewComment] = useState('')
+
+  const isFirstPage = currentPage === 1
+  const isLastPage = comments === undefined ? true : currentPage * 3 >= comments.length
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const comments = await modle.getCommentsByAID(answer.ansid)
+        setComments(comments)
+      } catch (error) {
+        console.error('Error fetching comments:', error)
+      }
+    }
+
+    fetchComments()
+  }, [answer.ansid])
+
+  function handleNextPage () {
+    setCurrentPage(p => p + 1)
+  }
+
+  function handlePrevPage () {
+    setCurrentPage(p => p - 1)
+  }
+
+  const handleAddComment = async () => {
+    try {
+      await modle.addComment(answer.ansid, newComment/*, currentUser */)
+      const fetchedComments = await modle.getCommentsByAID(answer.ansid)
+      setComments(fetchedComments)
+      setNewComment('')
+    } catch (error) {
+      console.error('Error adding comment:', error)
+    }
+  }
+
   const textWithLinks = replaceLinks(answer.text)
   return (
     <>
@@ -92,9 +131,32 @@ export function Answer ({ answer }) {
           {modle.formatDate(new Date(answer.ans_date_time))}
         </td>
       </tr>
-      <tr className="aComment">
+      {
+        comments.slice((currentPage - 1) * 3, (currentPage - 1) * 3 + 3).map((comment) => (
+          <tr key={comment.id} className="aRow">
+            <td className="aComment aComSize" dangerouslySetInnerHTML={{ __html: comment.text }} />
+            <td className="aComSize">
+              <b>{comment.cum_by}</b> commented
+              <br />
+              {modle.formatDate(new Date(comment.cum_date_time))}
+            </td>
+          </tr>
+        ))
+      }
+      {(comments.length > 0)
+        ? (<tr>
         <td>
-          <p>blahblah</p>
+          <button id="prevbutt" className="commentsort" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+          <button id="nextbutt" className="commentsort" onClick={handleNextPage} disabled={isLastPage}>Next</button>
+        </td>
+      </tr>)
+        : <></>}
+      <tr>
+        <td className="addComment">
+          <textarea id="ap_commenttext" value={newComment} placeholder="Add new comment" onChange={(e) => setNewComment(e.target.value)} />
+        </td>
+        <td className="addComment">
+          <button id="ap_commentbutton" onClick={handleAddComment}>Add Comment</button>
         </td>
       </tr>
     </>
