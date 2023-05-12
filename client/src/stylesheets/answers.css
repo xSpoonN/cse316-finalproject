@@ -12,6 +12,24 @@
     width: 50%;
 }
 
+#ap_commenttext {
+    text-align: left;
+    display: inline-block;
+    margin-left:30px;
+    width: 100%;
+    resize:vertical;
+}
+
+#ap_commentbutton {
+    padding: 6px;
+    display: inline-block;
+    font-size: medium;
+    background-color: cornflowerblue;
+    color: white;
+    border-color: cornflowerblue;
+    margin-left:40px;
+}
+
 #ap_answercount {
     text-align: left;
     display: inline-block;
@@ -45,7 +63,14 @@
 }
 
 .aComment {
-    padding-left: 15px
+    padding-left: 30px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
+
+.aComSize {
+    font-size: 14px;
 }
 
 .aTD {
