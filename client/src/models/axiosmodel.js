@@ -61,6 +61,18 @@ export function getQuestion (qid) {
   })
 }
 
+export function loginUser (email, password) {
+  return axios.post('http://localhost:8000/userLogin/', {
+    email,
+    password
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 export function getAnswers () {
   return axios.get('http://localhost:8000/answers').then((response) => {
     /* console.log(response.data) */
