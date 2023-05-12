@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export function addViews (qid) {
-  axios.post(`http://localhost:8000/questions/${qid}/views`)
+export async function addViews (qid) {
+  await axios.post(`http://localhost:8000/questions/${qid}/views`)
 }
 
 export function removeView (qid) {
