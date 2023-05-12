@@ -6,6 +6,10 @@ const TagSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   url: String
 })
 module.exports = mongoose.model('Tag', TagSchema)

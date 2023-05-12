@@ -23,12 +23,15 @@ export function Header ({ searchQueryChange, loggedIn }) {
     <div className="header" id="header">
       {/* <img src="../../QueueUnderflow.png" alt="logo" style={{ height: '8%', width: 'auto', position: 'fixed', left: '10px' }}/> */}
       <h1 id="title">Queue Underflow</h1>
-      {loggedIn && <input type="text"
-      id="search"
-      placeholder="Search ..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      onKeyDown={handleKeyDown}/>}
+      {loggedIn &&
+        <input type="text"
+          id="search"
+          placeholder="Search ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+      }
     </div>
   )
 }
@@ -37,15 +40,19 @@ Header.propTypes = {
   loggedIn: PropTypes.bool.isRequired
 }
 
-export function Sidebar ({ pageChange, activePage, searchQuery, setSearchQuery }) {
+export function Sidebar ({ pageChange, activePage, searchQuery, setSearchQuery, userEmail }) {
   const handlePageChange = (page) => {
     if (page === 'Questions') setSearchQuery('')
     pageChange(page)
   }
+  // Todo: make Profile invisible if logged in as a guest
   return (
     <div id="sidebar">
       <a className={activePage === 'Questions' ? 'sidebutt active' : 'sidebutt'} id="questiontab" onClick={() => handlePageChange('Questions')}>Questions</a>
       <a className={activePage === 'AllTags' ? 'sidebutt active' : 'sidebutt'} id="tagtab" onClick={() => handlePageChange('AllTags')}>Tags</a>
+      {userEmail !== 'guest' &&
+        <a className={activePage === 'Profile' ? 'sidebutt active' : 'sidebutt'} id="profiletab" onClick={() => handlePageChange('Profile')}>Profile</a>
+      }
     </div>
   )
 }
@@ -53,10 +60,11 @@ Sidebar.propTypes = {
   pageChange: PropTypes.func.isRequired,
   activePage: PropTypes.string.isRequired,
   searchQuery: PropTypes.string,
-  setSearchQuery: PropTypes.func.isRequired
+  setSearchQuery: PropTypes.func.isRequired,
+  userEmail: PropTypes.string.isRequired
 }
 
-export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn }) {
+export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, setIsLoggedIn, setUsername, username, setUserEmail }) {
   const switchToPage = (page) => () => setActivePage(page)
   const showAnswer = () => (id) => {
     setQid(id)
@@ -70,6 +78,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
 
   const loginGuest = () => {
     setIsLoggedIn(true)
+    setUserEmail('guest')
     switchToPage('Questions')()
   }
 
@@ -120,13 +129,18 @@ Page.propTypes = {
   activePage: PropTypes.string.isRequired,
   setActivePage: PropTypes.func.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
-  setIsLoggedIn: PropTypes.func.isRequired
+  setIsLoggedIn: PropTypes.func.isRequired,
+  setUsername: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  setUserEmail: PropTypes.func.isRequired
 }
 
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Landing')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
+  const [username, setUsername] = useState('')
 
   // function handleSignup () {
   //   return <SignupPage setIsLoggedIn={setIsLoggedIn}/>
@@ -139,10 +153,30 @@ export default function fakeStackOverflow () {
 
   return (
     <div>
-      {<Header searchQueryChange={setSearchQuery} loggedIn={isLoggedIn} className="header"/>}
-      {isLoggedIn && <Sidebar pageChange={(page) => setActivePage(page)} activePage={activePage} searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>}
+      {<Header
+        searchQueryChange={setSearchQuery}
+        loggedIn={isLoggedIn}
+        className="header"
+      />}
+      {isLoggedIn &&
+        <Sidebar
+          pageChange={(page) => setActivePage(page)}
+          activePage={activePage}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          userEmail={userEmail}
+        />}
       <div className="content">
-        <Page searchQuery={searchQuery} activePage={activePage} setActivePage={setActivePage} setSearchQuery={setSearchQuery} setIsLoggedIn={setIsLoggedIn}/>
+        <Page
+          searchQuery={searchQuery}
+          activePage={activePage}
+          setActivePage={setActivePage}
+          setSearchQuery={setSearchQuery}
+          setIsLoggedIn={setIsLoggedIn}
+          setUsername={setUsername}
+          username={username}
+          setUserEmail={setUserEmail}
+        />
       </div>
     </div>
   )
