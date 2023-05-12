@@ -66,10 +66,22 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     setSearchQuery(query)
     setActivePage('Questions')
   }
-
   const [currentQid, setQid] = useState('q1')
 
+  const loginGuest = () => {
+    setIsLoggedIn(true)
+    switchToPage('Questions')()
+  }
+
   switch (activePage) {
+    case 'Landing': /* console.log('Switching to Landing') */
+      return (
+        <LandingPage handleSignup={switchToPage('Signup')} handleGuest={loginGuest} />
+      )
+    case 'Signup': /* console.log('Switching to Signup') */
+      return (
+        <SignupPage setIsLoggedIn={setIsLoggedIn}/>
+      )
     case 'Questions': /* console.log('Switching to Questions') */
       return (
         <>
@@ -113,7 +125,7 @@ Page.propTypes = {
 
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
-  const [activePage, setActivePage] = useState('Questions')
+  const [activePage, setActivePage] = useState('Landing')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   // function handleSignup () {
