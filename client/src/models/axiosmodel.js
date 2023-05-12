@@ -18,17 +18,30 @@ export function getViews (qid) { /* Gets the views of a question */
 //
 
 /* ************* TAGS ************* */
+/** Gets a tag name from an id
+ *
+ * @param {string} tagId Id of the tag to get
+ * @returns {string} Returns the name of the tag
+ */
 export async function getTagName (tagId) { /* Gets the name of a tag */
   const resp = await axios.get(`http://localhost:8000/tags/${tagId}`)
   return resp.data.name
 }
 
-export async function getAllTags () { /* Gets all tags */
+/** Gets all tags
+ *
+ * @returns {Promise<Array>} Returns an array of all tags
+ */
+export async function getAllTags () {
   const resp = await axios.get('http://localhost:8000/tags')
   return resp.data
 }
 
-export function getTags () { /* Gets all tags */
+/** Gets all tags
+ *
+ * @returns {Promise<Array>} Returns an array of all tag names
+ */
+export function getTags () {
   return axios.get('http://localhost:8000/tags').then((response) => {
     console.log(response.data)
     return response.data
@@ -37,7 +50,12 @@ export function getTags () { /* Gets all tags */
   })
 }
 
-export function tagExists (tagName) { /* Checks if a tag exists */
+/** Checks if a tag exists
+ *
+ * @param {string} tagName Name of the tag to check
+ * @returns {Promise<string>} Returns the tag name if it exists
+ */
+export function tagExists (tagName) {
   return axios.get(`http://localhost:8000/tagNames/${tagName}`).then((response) => {
     console.log(response.data)
     return response.data
@@ -46,7 +64,12 @@ export function tagExists (tagName) { /* Checks if a tag exists */
   })
 }
 
-export function addTag (tag) { /* Adds a tag */
+/** Adds a tag
+ *
+ * @param {string} tag Name of the tag to add
+ * @returns {Promise<string>} The tag id if it was added
+ */
+export function addTag (tag) {
   return axios.post('http://localhost:8000/tags', {
     name: tag
   }).then((response) => {
@@ -62,18 +85,22 @@ export function addTag (tag) { /* Adds a tag */
 //
 
 /* ************* ANSWERS ************* */
-export async function getAnswerCount (qid) { /* Gets the number of answers for a question */
-  const resp = await axios.get(`http://localhost:8000/questions/${qid}`)
-  console.log(resp.data.answers.length)
-  return resp.data.answers.length
-}
-
-export async function getAnswerFromId (aid) { /* Gets an answer from an id */
+/** Gets an answer from an id
+ *
+ * @param {string} aid Id of the answer to get
+ * @returns {Promise<Answer>} Returns the answer object
+ */
+export async function getAnswerFromId (aid) {
   const resp = await axios.get(`http://localhost:8000/answers/${aid}`)
   return resp.data
 }
 
-export async function getAnswersByQID (qid) { /* Gets all answers for a question */
+/** Gets all answers for a question
+ *
+ * @param {string} qid Id of the question to get answers for
+ * @returns {Promise<Array<Answer>>} Returns an array of answers for the question
+ */
+export async function getAnswersByQID (qid) {
   const resp = await axios.get(`http://localhost:8000/questions/${qid}`)
   /* console.log(resp) */
   const answers = await Promise.all(resp.data.answers.map(async (r) => {
@@ -83,14 +110,20 @@ export async function getAnswersByQID (qid) { /* Gets all answers for a question
   return answers
 }
 
-// eslint-disable-next-line camelcase
-export async function addAnswer (qid, ans_by, text) { /* Adds an answer */
+/** Adds an answer to a question
+ *
+ * @param {string} qid Id of the question to add an answer to
+ * @param {string} ansby Id of the user who answered
+ * @param {string} text Text of the answer
+ * @returns {Promise<string>} Returns the id of the new answer
+ */
+export async function addAnswer (qid, ansby, text) {
   let newAnsId = null
 
   // Post a new answer
   await axios.post('http://localhost:8000/answers', {
     text,
-    ans_by // eslint-disable-line camelcase
+    ans_by: ansby
   }).then((response) => {
     console.log('New answer id ' + response.data)
     newAnsId = response.data
@@ -103,10 +136,6 @@ export async function addAnswer (qid, ans_by, text) { /* Adds an answer */
     console.log('No answer id')
     return null
   }
-
-  // // Get the current answers and concat
-  // const currentAnswers = await getAnswersByQID(qid)
-  // currentAnswers.concat(newAnsId) // eslint-disable-line camelcase
 
   // Update the question with the new answer
   axios.post(`http://localhost:8000/questions/${qid}/answers`, {
@@ -267,18 +296,18 @@ export function formatDate (askDate, now = new Date()) { /* Formats a date */
   } else if (timeDiffInDays < 365) {
     const formattedTime = `${askDate
       .getHours()
-      .toString()
-      .padStart(2, '0')}:${askDate.getMinutes().toString().padStart(2, '0')}`
-    return `${askDate.toLocaleDateString('en-US', {
+      .tostring()
+      .padStart(2, '0')}:${askDate.getMinutes().tostring().padStart(2, '0')}`
+    return `${askDate.toLocaleDatestring('en-US', {
       month: 'short',
       day: 'numeric'
     })} at ${formattedTime}`
   } else {
     const formattedTime = `${askDate
       .getHours()
-      .toString()
-      .padStart(2, '0')}:${askDate.getMinutes().toString().padStart(2, '0')}`
-    return `${askDate.toLocaleDateString('en-US', {
+      .tostring()
+      .padStart(2, '0')}:${askDate.getMinutes().tostring().padStart(2, '0')}`
+    return `${askDate.toLocaleDatestring('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
