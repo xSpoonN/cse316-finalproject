@@ -79,8 +79,15 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   const [currentQid, setQid] = useState('q1')
 
   const loginGuest = () => {
-    setIsLoggedIn(true)
     setUserEmail('guest')
+    setIsLoggedIn(true)
+    switchToPage('Questions')()
+  }
+
+  const loginUser = (name, email) => {
+    setUsername(name)
+    setUserEmail(email)
+    setIsLoggedIn(true)
     switchToPage('Questions')()
   }
 
@@ -95,7 +102,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       )
     case 'Login': /* console.log('Switching to Login') */
       return (
-        <LoginPage setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} setUserEmail={setUserEmail}/>
+        <LoginPage login={loginUser}/>
       )
     case 'Questions': /* console.log('Switching to Questions') */
       return (
@@ -153,15 +160,6 @@ export default function fakeStackOverflow () {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userEmail, setUserEmail] = useState('')
   const [username, setUsername] = useState('')
-
-  // function handleSignup () {
-  //   return <SignupPage setIsLoggedIn={setIsLoggedIn}/>
-  // }
-
-  // if (!isLoggedIn) return <LandingPage handleSignup={handleSignup} />
-
-  // eslint-disable-next-line
-  // if (!isLoggedIn) return <SignupPage setIsLoggedIn={setIsLoggedIn}/>
 
   return (
     <div>
