@@ -91,7 +91,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       )
     case 'Signup': /* console.log('Switching to Signup') */
       return (
-        <SignupPage setIsLoggedIn={setIsLoggedIn}/>
+        <SignupPage gotoLogin={switchToPage('Login')} />
       )
     case 'Login': /* console.log('Switching to Login') */
       return (
