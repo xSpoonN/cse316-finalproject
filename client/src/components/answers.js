@@ -12,7 +12,7 @@ function replaceLinks (text) {
 export default function Answers ({ qid, gotoPostAnswerPage }) {
   const [questionData, setQuestionData] = useState(null)
   const [answers, setAnswers] = useState([])
-  const [currentPage, setCurrentPage] = useState(1) // eslint-disable-line no-unused-vars
+  const [currentPage, setCurrentPage] = useState(1)
 
   const isFirstPage = currentPage === 1
   const isLastPage = answers === undefined ? true : currentPage * 5 >= answers.length

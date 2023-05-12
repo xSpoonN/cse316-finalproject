@@ -28,6 +28,10 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     default: 'Anonymous'
   },
+  asked_by_email: {
+    type: String,
+    default: ''
+  },
   ask_date_time: {
     type: Date,
     default: Date.now

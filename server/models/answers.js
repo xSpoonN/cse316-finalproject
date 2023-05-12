@@ -10,6 +10,10 @@ const AnswerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  ans_by_email: {
+    type: String,
+    required: true
+  },
   ans_date_time: {
     type: Date,
     default: Date.now

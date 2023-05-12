@@ -41,7 +41,8 @@ export default function QuestionForm ({ setActivePage }) {
         return (tagExists.length) ? tagExists[0]._id : modle.addTag(tag.toLowerCase())
       }))
 
-      await modle.addQuestion(title, text, tagIds, user)
+      // Todo: get email in here
+      await modle.addQuestion(title, text, tagIds, user, user)
       setActivePage('Questions')
     }
   }

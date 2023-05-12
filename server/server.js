@@ -49,6 +49,16 @@ app.get('/questions', async (req, res) => {
   }
 })
 
+/* Get All Questions by Email */
+app.get('/questions/:email', async (req, res) => {
+  try {
+    const posts = await Questions.find({asked_by_email: req.params.email})
+    res.json(posts)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 /* Add new Question */
 app.post('/questions', async (req, res) => {
   console.log('Question POST request received')
@@ -57,6 +67,7 @@ app.post('/questions', async (req, res) => {
     text: req.body.text,
     tags: req.body.tags,
     asked_by: req.body.user,
+    asked_by_email: req.body.email,
     ask_date_time: Date.now()
   })
   console.log(question)
