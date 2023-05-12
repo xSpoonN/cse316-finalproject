@@ -252,6 +252,18 @@ app.post('/users', async (req, res) => {
   })
 })
 
+app.get('/users/:email', async (req, res) => {
+  console.log('User GET request received')
+  try {
+    const user = await Users.findOne({email: req.params.email})
+    // console.log(user)
+    res.status(201).json(user)
+  }
+  catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 
 // Connect to the database
 mongoose.connect('mongodb://127.0.0.1:27017/fake_so')

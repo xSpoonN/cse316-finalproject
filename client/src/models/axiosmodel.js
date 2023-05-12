@@ -178,6 +178,15 @@ export async function getQuestionCountByTagId (tagId) {
   return (await getQuestions()).filter((q) => q.tags.includes(tagId)).length
 }
 
+export function getUser (email) {
+  return axios.get(`http://localhost:8000/users/${email}`).then((response) => {
+    // console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 export function formatDate (askDate, now = new Date()) {
   const timeDiffInSeconds = (now.getTime() - askDate.getTime()) / 1000
   const timeDiffInMinutes = timeDiffInSeconds / 60
