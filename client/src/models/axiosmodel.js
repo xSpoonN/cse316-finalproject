@@ -197,7 +197,7 @@ export function getQuestions () { /* Gets all questions */
  * @returns {Promise<Array<Question>>} Returns an array of all questions for a user
  */
 export function getQuestionsByEmail (email) {
-  return axios.get(`http://localhost:8000/questions/${email}`).then((response) => {
+  return axios.get(`http://localhost:8000/questionEmail/${email}`).then((response) => {
     /* console.log(response.data) */
     return response.data
   }).catch((e) => {
