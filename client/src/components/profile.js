@@ -17,8 +17,20 @@ UserQuestion.propTypes = {
   question: PropTypes.object.isRequired
 }
 
-function UserQuestionList ({ email, page }) {
+function UserQuestionList ({ email }) {
   const [questionList, setQuestionList] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const isFirstPage = currentPage === 1
+  const isLastPage = questionList === [] ? true : currentPage * 5 >= questionList.length
+
+  function handleNextPage () {
+    setCurrentPage(p => p + 1)
+  }
+
+  function handlePrevPage () {
+    setCurrentPage(p => p - 1)
+  }
 
   useEffect(() => {
     async function fetchQuestions () {
@@ -26,11 +38,11 @@ function UserQuestionList ({ email, page }) {
       setQuestionList(questions)
     }
     fetchQuestions()
-  }, [email, page])
+  }, [email])
 
   return (
     <>
-    <table id="pro_questions">
+    <table id="pro_questiontable">
       <tbody>
         <tr className="pRow">
           <td className="pTD pAns"></td>
@@ -42,25 +54,17 @@ function UserQuestionList ({ email, page }) {
         ))}
       </tbody>
     </table>
+    <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+    <button onClick={handleNextPage} disabled={isLastPage}>Next</button>
     </>
   )
 }
 UserQuestionList.propTypes = {
-  email: PropTypes.string.isRequired,
-  page: PropTypes.number.isRequired
+  email: PropTypes.string.isRequired
 }
 
 export default function Profile ({ email }) {
   const [user, setUser] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
-
-  function handleNextPage () {
-    setCurrentPage(p => p + 1)
-  }
-
-  function handlePrevPage () {
-    setCurrentPage(p => p - 1)
-  }
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -83,9 +87,7 @@ export default function Profile ({ email }) {
       <h2>{user.username + ` (${user.email})`}</h2>
       <p id="pro_age">{'Account created: ' + modle.formatDate(new Date(user.created_date_time))}</p>
       <p id="pro_rep">{'Reputation: ' + user.reputation}</p>
-      <UserQuestionList email={user.email} page={currentPage}/>
-      <button onClick={handlePrevPage}>Prev</button>
-      <button onClick={handleNextPage}>Next</button>
+      <UserQuestionList email={user.email}/>
     </>
   )
 }
