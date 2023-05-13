@@ -11,6 +11,7 @@ function replaceLinks (text) {
 
 export default function Answers ({ qid, gotoPostAnswerPage, email }) {
   const [questionData, setQuestionData] = useState(null)
+  const [tagNames, setTagNames] = useState([])
   const [answers, setAnswers] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -19,7 +20,14 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
 
   useEffect(() => {
     async function fetchData () {
-      setQuestionData(await modle.getQuestion(qid))
+      const question = await modle.getQuestion(qid)
+      setQuestionData(question)
+      const tagNames = await Promise.all(question.tags.map(async (tag) => {
+        const tagData = await modle.getTagName(tag)
+        return tagData
+      }))
+      setTagNames(tagNames)
+      console.log(tagNames)
       setAnswers((await modle.getAnswersByQID(qid)).sort((a, b) => {
         return new Date(b.ans_date_time) - new Date(a.ans_date_time)
       }))
@@ -53,6 +61,8 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
         <b>{questionData.asked_by}</b> asked<br />
         {modle.formatDate(new Date(questionData.ask_date_time))}
       </p>
+      <br/>
+      {tagNames.map((name, i) => (<button key={tagNames[i]} className="qtag">{name}</button>))}
       <br />
       <table id="ap_answers">
         <tbody>
