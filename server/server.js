@@ -50,7 +50,7 @@ app.get('/questions', async (req, res) => {
 })
 
 /* Get All Questions by Email */
-app.get('/questions/:email', async (req, res) => {
+app.get('/questionEmail/:email', async (req, res) => {
   try {
     const posts = await Questions.find({asked_by_email: req.params.email})
     res.json(posts)
