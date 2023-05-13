@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import '../stylesheets/profile.css'
 const modle = require('../models/axiosmodel.js')
 
-function UserQuestion ({ question }) {
+function UserQuestion ({ question, setPage }) {
+  const setAPage = (qid) => () => {
+    setPage(qid)
+  }
   return (
     <>
     <tr className="pRow">
-      <td className="pTD pAns">{question.asked_by_email}</td>
-      <td className="pTD pTitle">{question.title}</td>
-      <td className="pTD pDate">{question.text}</td>
+      <td className="pTD pInfo">DO THIS toLocaleDateString</td>
+      <td className="pTD pTitle"><a className='plink' onClick={setAPage(question._id)}>{question.title}</a></td>
+      <td className="pTD pDate">{modle.formatDate(new Date(question.ask_date_time))}</td>
     </tr>
     </>
   )
 }
 UserQuestion.propTypes = {
-  question: PropTypes.object.isRequired
+  question: PropTypes.object.isRequired,
+  setPage: PropTypes.func.isRequired
 }
 
-function UserQuestionList ({ email }) {
+function UserQuestionList ({ email, setPage }) {
   const [questionList, setQuestionList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -42,15 +47,15 @@ function UserQuestionList ({ email }) {
 
   return (
     <>
-    <table id="pro_questiontable">
+    <table id="pTable">
       <tbody>
         <tr className="pRow">
-          <td className="pTD pAns"></td>
-          <td className="pTD pTitle"></td>
+          <td className="pTD pInfo"></td>
+          <td className="pTD pTitle"><b>Your Questions</b></td>
           <td className="pTD pDate"></td>
         </tr>
         {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
-          <UserQuestion key={question._id} question={question}/>
+          <UserQuestion key={question._id} question={question} setPage={setPage}/>
         ))}
       </tbody>
     </table>
@@ -60,10 +65,11 @@ function UserQuestionList ({ email }) {
   )
 }
 UserQuestionList.propTypes = {
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email }) {
+export default function Profile ({ email, setPage }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -87,10 +93,11 @@ export default function Profile ({ email }) {
       <h2>{user.username + ` (${user.email})`}</h2>
       <p id="pro_age">{'Account created: ' + modle.formatDate(new Date(user.created_date_time))}</p>
       <p id="pro_rep">{'Reputation: ' + user.reputation}</p>
-      <UserQuestionList email={user.email}/>
+      <UserQuestionList email={user.email} setPage={setPage}/>
     </>
   )
 }
 Profile.propTypes = {
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setPage: PropTypes.func.isRequired
 }

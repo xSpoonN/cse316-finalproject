@@ -135,7 +135,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile email={email} />
+        <Profile email={email} setPage={showAnswer('!/^((?<=[\\w+?#.])-?(?=[\\w+?#.])|[\\w+?#.]){1,10}(\\s((?<=[\\w+?#.])-?(?=[\\w+?#.])|[\\w+?#.]){1,10}){0,4}$/')}/>
         </>
       )
   }

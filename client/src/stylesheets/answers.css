@@ -62,10 +62,6 @@
     vertical-align: bottom;
 }
 
-.aRow {
-    border-bottom: 1px dotted black;
-}
-
 .aComment {
     padding-left: 30px;
     padding-right: 12px;
@@ -75,6 +71,10 @@
 
 .aComSize {
     font-size: 14px;
+}
+
+.aRow {
+    border-bottom: 1px dotted black;
 }
 
 .aTD {
