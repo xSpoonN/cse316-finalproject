@@ -131,13 +131,14 @@ export async function getAnswersByQID (qid) {
  * @param {string} text Text of the answer
  * @returns {Promise<string>} Returns the id of the new answer
  */
-export async function addAnswer (qid, ansby, text) {
+export async function addAnswer (qid, ansby, text, email) {
   let newAnsId = null
 
   // Post a new answer
   await axios.post('http://localhost:8000/answers', {
     text,
-    ans_by: ansby
+    ans_by: ansby,
+    email
   }).then((response) => {
     console.log('New answer id ' + response.data)
     newAnsId = response.data

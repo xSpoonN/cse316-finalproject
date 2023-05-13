@@ -123,7 +123,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       )
     case 'PostAnswer': /* console.log('Switching to PostAnswer') */
       return (
-        <AnswerForm setActivePage={setActivePage} qid={currentQid}/>
+        <AnswerForm setActivePage={setActivePage} qid={currentQid} email={email}/>
       )
     case 'AllTags': /* console.log('Switching to AllTags') */
       return (
