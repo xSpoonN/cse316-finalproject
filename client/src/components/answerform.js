@@ -4,21 +4,19 @@ import '../stylesheets/answerform.css' /* I'm not sure if this line even matters
 import { validateLinks } from './questionform'
 const modle = require('../models/axiosmodel.js')
 
-export default function AnswerForm ({ setActivePage, qid }) {
-  const [user, setUser] = useState('')
+export default function AnswerForm ({ setActivePage, qid, email }) {
   const [text, setText] = useState('')
 
-  const [userError, setUserError] = useState('')
   const [textError, setTextError] = useState('')
 
-  const handleUserChange = (event) => { setUser(event.target.value) }
   const handleTextChange = (event) => { setText(event.target.value) }
 
   async function handleSubmit (event) {
     event.preventDefault()
 
     if (checkQuestionForm()) {
-      await modle.addAnswer(qid, user, text)
+      const user = await modle.getUser(email)
+      await modle.addAnswer(qid, user.username, text, email)
       // modle.removeView(qid) // Ensure the view is not double-counted
       setActivePage('Answers')
     }
@@ -26,11 +24,6 @@ export default function AnswerForm ({ setActivePage, qid }) {
 
   function checkQuestionForm () {
     let errFound = false
-
-    /* Validate Username */
-    if (!user.length) {
-      setUserError('A username is required!'); errFound = true
-    } else setUserError('')
 
     /* Validate Description */
     if (!text.length) {
@@ -51,10 +44,6 @@ export default function AnswerForm ({ setActivePage, qid }) {
     <>
     <form onSubmit={handleSubmit}>
       <div>
-        <h2>Username*</h2>
-        <input type="text" name="answeruser" id="auser" value={user} maxLength="100" onChange={handleUserChange} />
-        <p className="errormsg" id="ausererror">{userError}</p>
-
         <h2>Answer Text*</h2>
         <p style={{ fontStyle: 'italic' }}>Add details</p>
         <textarea name="answerdesc" id="atext" value={text} onChange={handleTextChange} cols={80} rows={10}></textarea>
@@ -70,5 +59,6 @@ export default function AnswerForm ({ setActivePage, qid }) {
 }
 AnswerForm.propTypes = {
   setActivePage: PropTypes.func.isRequired,
-  qid: PropTypes.string.isRequired
+  qid: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired
 }

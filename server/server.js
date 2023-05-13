@@ -136,7 +136,8 @@ app.post('/answers', async (req, res) => {
   const answer = new Answers({
     text: req.body.text,
     ans_by: req.body.ans_by,
-    ans_date_time: Date.now()
+    ans_date_time: Date.now(),
+    ans_by_email: req.body.email
   })
   console.log(answer)
   try {
