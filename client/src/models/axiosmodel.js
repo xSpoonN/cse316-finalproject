@@ -82,9 +82,10 @@ export function tagExists (tagName) {
  * @param {string} tag Name of the tag to add
  * @returns {Promise<string>} The tag id if it was added
  */
-export function addTag (tag) {
+export function addTag (tag, creator) {
   return axios.post('http://localhost:8000/tags', {
-    name: tag
+    name: tag,
+    creator
   }).then((response) => {
     console.log(response.data)
     return response.data

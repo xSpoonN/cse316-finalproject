@@ -65,6 +65,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
           ))}
         </tbody>
       </table>
+      <br />
       <div>
         <button id="prevbutt" className="answersort" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
         <button id="nextbutt" className="answersort" onClick={handleNextPage} disabled={isLastPage}>Next</button>

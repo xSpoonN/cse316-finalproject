@@ -209,7 +209,8 @@ app.get('/tags', async (req, res) => {
 app.post('/tags', async (req, res) => {
   console.log('Tag POST request received')
   const tag = new Tags({
-    name: req.body.name
+    name: req.body.name,
+    createdBy: req.body.creator
   })
   try {
     const newTag = await tag.save()
