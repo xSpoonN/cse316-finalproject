@@ -35,7 +35,7 @@ function UserQuestionList ({ email }) {
   useEffect(() => {
     async function fetchQuestions () {
       const questions = await modle.getQuestionsByEmail(email)
-      setQuestionList(questions)
+      setQuestionList(questions.sort((a, b) => new Date(b.ask_date_time) - new Date(a.ask_date_time)))
     }
     fetchQuestions()
   }, [email])
@@ -49,7 +49,7 @@ function UserQuestionList ({ email }) {
           <td className="pTD pTitle"></td>
           <td className="pTD pDate"></td>
         </tr>
-        {questionList.map((question) => (
+        {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
           <UserQuestion key={question._id} question={question}/>
         ))}
       </tbody>
