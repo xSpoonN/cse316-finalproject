@@ -111,7 +111,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       )
     case 'PostQuestion': /* console.log('Switching to PostQuestion') */
       return (
-        <PostQuestion setActivePage={setActivePage}/>
+        <PostQuestion setActivePage={setActivePage} email={email}/>
       )
     case 'Answers': /* console.log('Switching to Answers') */
       return (

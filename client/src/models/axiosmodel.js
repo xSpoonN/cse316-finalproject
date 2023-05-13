@@ -1,15 +1,28 @@
 import axios from 'axios'
 
 /* ************* VIEWS ************* */
-export async function addViews (qid) { /* Increments the views of a question */
+/**
+ * Adds a view to a question
+ * @param {string} qid
+ */
+export async function addViews (qid) {
   await axios.post(`http://localhost:8000/questions/${qid}/views`)
 }
 
-export function removeView (qid) { /* Decrements the views of a question */
+/**
+ * Removes a view from a question
+ * @param {string} qid
+ */
+export function removeView (qid) {
   axios.post(`http://localhost:8000/questions/${qid}/removeviews`)
 }
 
-export function getViews (qid) { /* Gets the views of a question */
+/**
+ * Gets the number of views for a question
+ * @param {string} qid
+ * @returns {Promise<number>} Returns the number of views for the question
+ */
+export function getViews (qid) {
   return axios.get(`http://localhost:8000/questions/${qid}`)
 }
 
@@ -18,18 +31,18 @@ export function getViews (qid) { /* Gets the views of a question */
 //
 
 /* ************* TAGS ************* */
-/** Gets a tag name from an id
- *
- * @param {string} tagId Id of the tag to get
+/**
+ * Gets a tag name from an id
+ * @param {string} tagId
  * @returns {string} Returns the name of the tag
  */
-export async function getTagName (tagId) { /* Gets the name of a tag */
+export async function getTagName (tagId) {
   const resp = await axios.get(`http://localhost:8000/tags/${tagId}`)
   return resp.data.name
 }
 
-/** Gets all tags
- *
+/**
+ * Gets all tags
  * @returns {Promise<Array>} Returns an array of all tags
  */
 export async function getAllTags () {
@@ -37,8 +50,8 @@ export async function getAllTags () {
   return resp.data
 }
 
-/** Gets all tags
- *
+/**
+ * Gets all tags
  * @returns {Promise<Array>} Returns an array of all tag names
  */
 export function getTags () {
@@ -50,8 +63,8 @@ export function getTags () {
   })
 }
 
-/** Checks if a tag exists
- *
+/**
+ * Checks if a tag exists
  * @param {string} tagName Name of the tag to check
  * @returns {Promise<string>} Returns the tag name if it exists
  */
@@ -64,14 +77,15 @@ export function tagExists (tagName) {
   })
 }
 
-/** Adds a tag
- *
+/**
+ * Adds a tag
  * @param {string} tag Name of the tag to add
  * @returns {Promise<string>} The tag id if it was added
  */
-export function addTag (tag) {
+export function addTag (tag, creator) {
   return axios.post('http://localhost:8000/tags', {
-    name: tag
+    name: tag,
+    creator
   }).then((response) => {
     console.log(response.data)
     return response.data
@@ -85,9 +99,9 @@ export function addTag (tag) {
 //
 
 /* ************* ANSWERS ************* */
-/** Gets an answer from an id
- *
- * @param {string} aid Id of the answer to get
+/**
+ * Gets an answer from an id
+ * @param {string} aid
  * @returns {Promise<Answer>} Returns the answer object
  */
 export async function getAnswerFromId (aid) {
@@ -95,9 +109,9 @@ export async function getAnswerFromId (aid) {
   return resp.data
 }
 
-/** Gets all answers for a question
- *
- * @param {string} qid Id of the question to get answers for
+/**
+ * Gets all answers for a question
+ * @param {string} qid
  * @returns {Promise<Array<Answer>>} Returns an array of answers for the question
  */
 export async function getAnswersByQID (qid) {
@@ -110,10 +124,10 @@ export async function getAnswersByQID (qid) {
   return answers
 }
 
-/** Adds an answer to a question
- *
- * @param {string} qid Id of the question to add an answer to
- * @param {string} ansby Id of the user who answered
+/**
+ * Adds an answer to a question
+ * @param {string} qid
+ * @param {string} ansby
  * @param {string} text Text of the answer
  * @returns {Promise<string>} Returns the id of the new answer
  */
@@ -147,7 +161,11 @@ export async function addAnswer (qid, ansby, text) {
   })
 }
 
-export function getAnswers () { /* Gets all answers */
+/**
+ * Gets all answers
+ * @returns {Promise<Array>} Returns an array of all answers
+ */
+export function getAnswers () {
   return axios.get('http://localhost:8000/answers').then((response) => {
     /* console.log(response.data) */
     return response.data
@@ -161,6 +179,10 @@ export function getAnswers () { /* Gets all answers */
 //
 
 /* ************* QUESTIONS ************* */
+/**
+ * Gets a question from an id
+ * @returns {Promise<Array<Question>>} Returns an array of all questions
+ */
 export function getQuestions () { /* Gets all questions */
   return axios.get('http://localhost:8000/questions').then((response) => {
     /* console.log(response.data) */
@@ -170,6 +192,11 @@ export function getQuestions () { /* Gets all questions */
   })
 }
 
+/**
+ * Gets all questions for a user
+ * @param {string} email
+ * @returns {Promise<Array<Question>>} Returns an array of all questions for a user
+ */
 export function getQuestionsByEmail (email) {
   return axios.get(`http://localhost:8000/questionEmail/${email}`).then((response) => {
     /* console.log(response.data) */
@@ -179,7 +206,12 @@ export function getQuestionsByEmail (email) {
   })
 }
 
-export function getQuestion (qid) { /* Gets a question from an id */
+/**
+ * Gets a question from an id
+ * @param {string} qid
+ * @returns {Promise<Question>} Returns the question object
+ */
+export function getQuestion (qid) {
   return axios.get(`http://localhost:8000/questions/${qid}`).then((response) => {
     console.log(response.data)
     return response.data
@@ -188,6 +220,15 @@ export function getQuestion (qid) { /* Gets a question from an id */
   })
 }
 
+/**
+ * Adds a question
+ * @param {string} title
+ * @param {string} text
+ * @param {Array<string>} tags
+ * @param {string} user
+ * @param {string} email
+ * @returns {Promise<string>} Returns the id of the new question
+ */
 export function addQuestion (title, text, tags, user, email) {
   return axios.post('http://localhost:8000/questions', {
     title,
@@ -203,7 +244,12 @@ export function addQuestion (title, text, tags, user, email) {
   })
 }
 
-export async function getQuestionCountByTagId (tagId) { /* Gets the number of questions for a tag */
+/**
+ * Gets the number of questions for a tag
+ * @param {string} tagId
+ * @returns {Promise<number>} Returns the number of questions for a tag
+ */
+export async function getQuestionCountByTagId (tagId) {
   return (await getQuestions()).filter((q) => q.tags.includes(tagId)).length
 }
 
@@ -212,7 +258,12 @@ export async function getQuestionCountByTagId (tagId) { /* Gets the number of qu
 //
 
 /* ************* COMMENTS ************* */
-export function getCommentsByAID (aid) { /* Gets all comments for an answer */
+/**
+ * Gets all comments
+ * @param {string} aid
+ * @returns {Promise<Array<Comment>>} Returns an array of comments for an answer
+ */
+export function getCommentsByAID (aid) {
   return axios.get(`http://localhost:8000/comments/${aid}`).then((response) => {
     /* console.log(response.data) */
     return response
@@ -221,7 +272,12 @@ export function getCommentsByAID (aid) { /* Gets all comments for an answer */
   })
 }
 
-export function getCommentByID (cid) { /* Gets a comment from an id */
+/**
+ * Gets a comment from an id
+ * @param {string} cid
+ * @returns {Promise<Comment>} Returns the comment object
+ */
+export function getCommentByID (cid) {
   return axios.get(`http://localhost:8000/comment/${cid}`).then((response) => {
     /* console.log(response.data) */
     return response
@@ -230,7 +286,14 @@ export function getCommentByID (cid) { /* Gets a comment from an id */
   })
 }
 
-export function addComment (aid, text, user) { /* Adds a comment to an answer */
+/**
+ * Adds a comment
+ * @param {string} aid
+ * @param {string} text
+ * @param {string} user
+ * @returns {Promise<string>} Returns the new comment
+ */
+export function addComment (aid, text, user) {
   return axios.post('http://localhost:8000/comments', {
     text,
     aid,
@@ -248,7 +311,14 @@ export function addComment (aid, text, user) { /* Adds a comment to an answer */
 //
 
 /* ************* USERS ************* */
-export function addUser (email, username, password) { /* Adds a user */
+/**
+ * Adds a user
+ * @param {string} email
+ * @param {string} username
+ * @param {string} password
+ * @returns {Promise<User>} Returns the new user
+ */
+export function addUser (email, username, password) {
   return axios.post('http://localhost:8000/users', {
     email,
     username,
@@ -261,7 +331,12 @@ export function addUser (email, username, password) { /* Adds a user */
   })
 }
 
-export function getUser (email) { /* Gets a user from an email */
+/**
+ * Gets a user from an email
+ * @param {string} email
+ * @returns {Promise<User>} Returns the user
+ */
+export function getUser (email) {
   return axios.get(`http://localhost:8000/users/${email}`).then((response) => {
     // console.log(response.data)
     return response.data
@@ -270,7 +345,13 @@ export function getUser (email) { /* Gets a user from an email */
   })
 }
 
-export function loginUser (email, password) { /* Logs in a user */
+/**
+ * Logs in a user
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<Response>} Returns the user
+ */
+export function loginUser (email, password) {
   return axios.post('http://localhost:8000/userLogin/', {
     email,
     password
@@ -282,8 +363,12 @@ export function loginUser (email, password) { /* Logs in a user */
     throw e
   })
 }
-
-export function formatDate (askDate, now = new Date()) { /* Formats a date */
+/**
+ * Logs out a user
+ * @param {Date} askDate
+ * @param {Date} now
+ */
+export function formatDate (askDate, now = new Date()) {
   const timeDiffInSeconds = (now.getTime() - askDate.getTime()) / 1000
   const timeDiffInMinutes = timeDiffInSeconds / 60
   const timeDiffInHours = timeDiffInMinutes / 60

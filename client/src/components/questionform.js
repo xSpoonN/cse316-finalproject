@@ -14,35 +14,33 @@ export function validateLinks (text) {
   return null
 }
 
-export default function QuestionForm ({ setActivePage }) {
+export default function QuestionForm ({ setActivePage, email }) {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const [tags, setTags] = useState('')
-  const [user, setUser] = useState('')
 
   const [titleError, setTitleError] = useState('')
   const [textError, setTextError] = useState('')
   const [tagsError, setTagsError] = useState('')
-  const [userError, setUserError] = useState('')
 
   const handleTitleChange = (event) => { setTitle(event.target.value) }
   const handleTextChange = (event) => { setText(event.target.value) }
   const handleTagsChange = (event) => { setTags(event.target.value) }
-  const handleUserChange = (event) => { setUser(event.target.value) }
 
   async function handleSubmit (event) {
     event.preventDefault()
 
     if (checkQuestionForm()) {
       const tagsList = tags.split(' ')
+      const user = await modle.getUser(email)
       const tagIds = await Promise.all(tagsList.map(async (tag) => {
         const tagExists = await modle.tagExists(tag.toLowerCase())
         console.log(tagExists)
-        return (tagExists.length) ? tagExists[0]._id : modle.addTag(tag.toLowerCase())
+        return (tagExists.length) ? tagExists[0]._id : modle.addTag(tag.toLowerCase(), user._id)
+        // Todo: Check Reputation of the creating user.
       }))
 
-      // Todo: get email in here
-      await modle.addQuestion(title, text, tagIds, user, user)
+      await modle.addQuestion(title, text, tagIds, user.username, email)
       setActivePage('Questions')
     }
   }
@@ -76,11 +74,6 @@ export default function QuestionForm ({ setActivePage }) {
       setTagsError('Between 1-5 tags of length 1-10 are required!'); errFound = true
     } else setTagsError('')
 
-    /* Validate Username */
-    if (!user.length) {
-      setUserError('A username is required!'); errFound = true
-    } else setUserError('')
-
     return !errFound
   }
 
@@ -101,10 +94,6 @@ export default function QuestionForm ({ setActivePage }) {
         <p style={{ fontStyle: 'italic' }}>Add keywords separated by whitespace</p>
         <input type="text" name="questiontags" value={tags} onChange={handleTagsChange} />
         <p className="errormsg" id="qtagserror">{tagsError}</p>
-
-        <h2>Username*</h2>
-        <input type="text" name="questionasker" value={user} onChange={handleUserChange} />
-        <p className="errormsg" id="qusererror">{userError}</p>
         <br /><br /><br /><br /><br />
 
         <input type="submit" id="postqbutt" value="Post Question" />
@@ -114,5 +103,6 @@ export default function QuestionForm ({ setActivePage }) {
   )
 }
 QuestionForm.propTypes = {
-  setActivePage: PropTypes.func.isRequired
+  setActivePage: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired
 }
