@@ -109,7 +109,12 @@ export function Answer ({ answer, email }) {
         const fetchedCommentData = await Promise.all(
           comments.data.map(async (comment) => {
             const commentData = await modle.getCommentByID(comment)
-            return commentData.data
+            const user = await modle.getUser(commentData.data.cum_by)
+            const author = user ? user.username : 'Unknown'
+            return {
+              ...commentData.data,
+              cum_by: author
+            }
           })
         )
         setCommentData(fetchedCommentData)
@@ -119,7 +124,7 @@ export function Answer ({ answer, email }) {
     }
 
     fetchComments()
-  }, [answer._id, comments.length]) // Add comments.length as a dependency
+  }, [answer._id, comments.length])
 
   function handleNextPage () {
     setCurrentPage(p => p + 1)
