@@ -1,6 +1,6 @@
-#ap_answers {
+.ap_answers {
     border-collapse: collapse;
-    table-layout: fixed;
+    /* table-layout: fixed; */
     padding: 10px;
     width: 100%;
 }
@@ -21,7 +21,35 @@
 }
 
 #prevbutt2 {
-    margin-left:30px
+    margin-left:30px;
+    background-color: cornflowerblue;
+    color:white;
+    border-color: cornflowerblue
+}
+#prevbutt2:disabled {
+    background-color: rgb(163, 163, 163);
+    color: white;
+    border-color: rgb(163, 163, 163)
+}
+#prevbutt {
+    background-color: cornflowerblue;
+    color: white;
+    border-color: cornflowerblue
+}
+#prevbutt:disabled {
+    background-color: rgb(163, 163, 163);
+    color: white;
+    border-color: rgb(163, 163, 163)
+}
+#nextbutt {
+    background-color: cornflowerblue;
+    color: white;
+    border-color: cornflowerblue
+}
+#nextbutt:disabled {
+    background-color: rgb(163, 163, 163);
+    color: white;
+    border-color: rgb(163, 163, 163)
 }
 
 #ap_commentbutton {
@@ -101,6 +129,7 @@
     padding-right: 12px;
     padding-bottom: 12px;
     padding-top: 12px;
+    width:70%;
 }
 
 .aComSize {
@@ -115,13 +144,44 @@
     padding: 15px;
 }
 
+.aV {
+    width: 5%;
+    text-align: center;
+}
+
+.acV {
+    width: 5%;
+    text-align: center;
+    padding-left:5%;
+    font-size: 16px;
+}
+
+.acvote {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+}
+
+.acvote:focus {
+    outline: none;
+}
+
+.acvote:active {
+    outline: none;
+}
+
 .aAns {
-    width: 70%;
+    /* width: 60%;
+    max-width: 665px; */
     overflow-wrap: break-word;
 }
 
 .aCred {
-    width: 20%;
+    /* width: 20%; */
     vertical-align: middle;
     text-align: right;
     padding-right:40px

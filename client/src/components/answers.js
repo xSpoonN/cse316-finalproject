@@ -49,13 +49,8 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
     fetchVoteStatus()
   }, [email, questionData])
 
-  function handleNextPage () {
-    setCurrentPage(p => p + 1)
-  }
-
-  function handlePrevPage () {
-    setCurrentPage(p => p - 1)
-  }
+  function handleNextPage () { setCurrentPage(p => p + 1) }
+  function handlePrevPage () { setCurrentPage(p => p - 1) }
 
   const handleUpvote = async () => {
     const resp = await modle.addRep('question', qid, 1, email)
@@ -104,7 +99,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
       <br/>
       {tagNames.map((name, i) => (<button key={tagNames[i]} className="qtag">{name}</button>))}
       <br />
-      <table id="ap_answers">
+      <table className="ap_answers">
         <tbody>
           <tr className="aRow">
             <td className="aTD aAns"></td>
@@ -137,6 +132,8 @@ export function Answer ({ answer, email }) {
   const [commentData, setCommentData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newComment, setNewComment] = useState('')
+  const [answerData, setAnswerData] = useState(answer)
+  const [voteStatus, setVoteStatus] = useState(0)
 
   const isFirstPage = currentPage === 1
   const isLastPage = comments === undefined ? true : currentPage * 3 >= comments.length
@@ -144,6 +141,9 @@ export function Answer ({ answer, email }) {
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        const answerData = await modle.getAnswerFromId(answer._id)
+        setAnswerData(answerData)
+
         const comments = await modle.getCommentsByAID(answer._id)
         setComments(comments.data)
         const fetchedCommentData = await Promise.all(
@@ -164,15 +164,22 @@ export function Answer ({ answer, email }) {
     }
 
     fetchComments()
-  }, [answer._id, comments.length])
+  }, [answer._id, comments.length, currentPage])
 
-  function handleNextPage () {
-    setCurrentPage(p => p + 1)
-  }
+  useEffect(() => {
+    async function fetchVoteStatus () {
+      const user = await modle.getUser(email)
+      if (user) {
+        if (answerData?.upvoters?.includes(user._id)) setVoteStatus(1)
+        else if (answerData?.downvoters?.includes(user._id)) setVoteStatus(-1)
+        else setVoteStatus(0)
+      }
+    }
+    fetchVoteStatus()
+  }, [email, answerData])
 
-  function handlePrevPage () {
-    setCurrentPage(p => p - 1)
-  }
+  function handleNextPage () { setCurrentPage(p => p + 1) }
+  function handlePrevPage () { setCurrentPage(p => p - 1) }
 
   const handleAddComment = async () => {
     try {
@@ -187,12 +194,43 @@ export function Answer ({ answer, email }) {
     }
   }
 
+  const handleUpvote = async () => {
+    const resp = await modle.addRep('answer', answer._id, 1, email)
+    setVoteStatus(1)
+    setAnswerData((data) => ({
+      ...data,
+      reputation: resp.updated.reputation,
+      upvoters: resp.updated.upvoters,
+      downvoters: resp.updated.downvoters
+    }))
+    console.log(resp.updated.reputation)
+  }
+
+  const handleDownvote = async () => {
+    const resp = await modle.addRep('answer', answer._id, -1, email)
+    setVoteStatus(-1)
+    setAnswerData((data) => ({
+      ...data,
+      reputation: resp.updated.reputation,
+      upvoters: resp.updated.upvoters,
+      downvoters: resp.updated.downvoters
+    }))
+    console.log(resp.updated.reputation)
+  }
+
   const textWithLinks = replaceLinks(answer.text)
   return (
     <>
       <tr className="aRow">
+        <td className="aV">
+          <button className={voteStatus === 1 ? 'avote upvoted' : 'avote'} onClick={handleUpvote}>▲</button>
+          <br/>
+          {answerData.reputation}
+          <br/>
+          <button className={voteStatus === -1 ? 'avote downvoted' : 'avote'} onClick={handleDownvote}>▼</button>
+        </td>
         <td className="aTD aAns" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>
-        <td className="aTd aCred">
+        <td className="aTD aCred">
           <b>{answer.ans_by}</b> answered
           <br />
           {modle.formatDate(new Date(answer.ans_date_time))}
@@ -201,6 +239,13 @@ export function Answer ({ answer, email }) {
       {
         commentData.slice((currentPage - 1) * 3, (currentPage - 1) * 3 + 3).map((comment) => (
           <tr key={comment._id} className="aRow">
+            <td className="acV">
+              <button>▲</button>
+              <br/>
+              0
+              <br/>
+              <button>▼</button>
+            </td>
             <td className="aComment aComSize" dangerouslySetInnerHTML={{ __html: comment.text }} />
             <td className="aComSize">
               <b>{comment.cum_by}</b> commented
@@ -212,6 +257,7 @@ export function Answer ({ answer, email }) {
       }
       {(comments.length > 0)
         ? (<tr>
+          <td></td>
           <td>
             <button id="prevbutt2" className="commentsort" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
             <button id="nextbutt" className="commentsort" onClick={handleNextPage} disabled={isLastPage}>Next</button>
@@ -220,6 +266,7 @@ export function Answer ({ answer, email }) {
         : <></>}
       {(email !== '')
         ? (<tr className="aRow">
+          <td></td>
           <td className="addComment" style={{ paddingBottom: '15px' }}>
             <textarea id="ap_commenttext" value={newComment} placeholder="Add new comment" onChange={(e) => setNewComment(e.target.value)} />
           </td>

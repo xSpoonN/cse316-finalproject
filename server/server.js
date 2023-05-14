@@ -337,21 +337,21 @@ app.post('/rep', async (req, res) => {
       user = await Users.findOne({email: updated[req.body.type == 'answer' ? 'ans_by_email' : 'asked_by_email']})
       if (rep > 0 && updated.upvoters.includes(reqUser._id)) { /* If user has already upvoted, remove that vote */
         updated.upvoters.splice(updated.upvoters.indexOf(reqUser._id), 1)
-        updated.rep -= 1; user.reputation -= 5
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] -= 1; user.reputation -= 5
       } else if (rep < 0 && updated.downvoters.includes(reqUser._id)) { /* If user has already downvoted, remove that vote */
         updated.downvoters.splice(updated.downvoters.indexOf(reqUser._id), 1)
-        updated.rep += 1; user.reputation += 10
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += 1; user.reputation += 10
       } else {
         /* If user has voted in the other direction, remove that vote and add this one */
         const indIfInOther = updated[rep > 0 ? 'downvoters' : 'upvoters'].indexOf(reqUser._id)
         if (indIfInOther != -1) {
           updated[rep > 0 ? 'downvoters' : 'upvoters'].splice(indIfInOther, 1)
-          updated.rep += rep; user.reputation += (rep > 0 ? 10 : -5)
+          updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep; user.reputation += (rep > 0 ? 10 : -5)
         }
 
         /* Add this vote */
         updated[rep > 0 ? 'upvoters' : 'downvoters'].push(reqUser._id)
-        updated.rep += rep; user.reputation += (rep > 0 ? 5 : -10)
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep; user.reputation += (rep > 0 ? 5 : -10)
       }
     } else if (req.body.type == 'comment') {
       updated = await Comments.findOneAndUpdate({_id: req.body.id}, {$inc: {rep: rep}})
@@ -361,8 +361,8 @@ app.post('/rep', async (req, res) => {
         updated.rep -= rep;
       }
     } else {
-      res.status(400).json({ message: 'Invalid type' })
-      return
+      console.log('Invalid type')
+      return res.status(400).json({ message: 'Invalid type' })
     }
     updated.save()
     user.save()
