@@ -172,7 +172,7 @@ app.get('/answers/:answerId', async (req, res) => {
 
 /* Get tag by ID */
 app.get('/tags/:tagId', async (req, res) => {
-  console.log('Tag/:tagId GET request received')
+  /* console.log('Tag/:tagId GET request received') */
   try {
     const tag = await Tags.findById(req.params.tagId)
     res.json(tag)
@@ -290,6 +290,7 @@ app.get('/comments/:aid', async (req, res) => {
   }
 })
 
+/* Get Comment by ID */
 app.get('/comment/:cid', async (req, res) => {
   console.log('Comment GET request received')
   try {
@@ -319,6 +320,54 @@ app.post('/comments', async (req, res) => {
     res.status(201).json(newComment)
   } catch (err) {
     res.status(400).json({ message: err.message })
+  }
+})
+
+/* Modify the rep of something */
+app.post('/rep', async (req, res) => {
+  console.log('Rep POST request received')
+  try {
+    console.log('reqbody: ', req.body)
+    let updated, user
+    const rep = req.body.rep
+    if (req.body.type == 'answer' || req.body.type == 'question') {
+      updated = await (req.body.type == 'answer' ? Answers : Questions).findOne({_id: req.body.id})
+      user = await Users.findOne({email: updated[req.body.type == 'answer' ? 'ans_by_email' : 'asked_by_email']})
+      if (rep > 0 && updated.upvoters.includes(user._id)) { /* If user has already upvoted, remove that vote */
+        updated.upvoters.splice(updated.upvoters.indexOf(user._id), 1)
+        updated.rep -= 1; user.reputation -= 5
+      } else if (rep < 0 && updated.downvoters.includes(user._id)) { /* If user has already downvoted, remove that vote */
+        updated.downvoters.splice(updated.downvoters.indexOf(user._id), 1)
+        updated.rep += 1; user.reputation += 10
+      } else {
+        /* If user has voted in the other direction, remove that vote and add this one */
+        const indIfInOther = updated[rep > 0 ? 'downvoters' : 'upvoters'].indexOf(user._id)
+        if (indIfInOther != -1) {
+          updated[rep > 0 ? 'downvoters' : 'upvoters'].splice(indIfInOther, 1)
+          updated.rep += rep; user.reputation += (rep > 0 ? 10 : -5)
+        }
+
+        /* Add this vote */
+        updated[rep > 0 ? 'upvoters' : 'downvoters'].push(user._id)
+        updated.rep += rep; user.reputation += (rep > 0 ? 5 : -10)
+      }
+    } else if (req.body.type == 'comment') {
+      updated = await Comments.findOneAndUpdate({_id: req.body.id}, {$inc: {rep: rep}})
+      user = await Users.findOne({email: updated.cum_by})
+      if (updated.voters.includes(user._id)) return res.status(400).json({ message: 'Already voted' })
+    } else {
+      res.status(400).json({ message: 'Invalid type' })
+      return
+    }
+    updated.save()
+    user.save()
+    res.status(200).json({ message: 'Rep updated', updated: updated })
+
+    console.log('updated user: ', user)
+    console.log('updated object: ', updated)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: err.message })
   }
 })
 

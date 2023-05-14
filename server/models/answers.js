@@ -22,6 +22,18 @@ const AnswerSchema = new mongoose.Schema({
   comments: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
+  }],
+  reputation: {
+    type: Number,
+    default: 0
+  },
+  upvoters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  downvoters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }]
 })
 module.exports = mongoose.model('Answer', AnswerSchema)

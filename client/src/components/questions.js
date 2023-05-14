@@ -4,8 +4,10 @@ import '../stylesheets/questions.css'
 import '../stylesheets/fakeStackOverflow.css'
 const modle = require('../models/axiosmodel.js')
 
-export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage }) {
+export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep }) {
   const [tagNames, setTagNames] = useState([])
+  const [reputation, setReputation] = useState(rep)
+  /* const [voteStatus, setVoteStatus] = useState(0) // 0 = no vote, 1 = upvote, -1 = downvote */
   const setPage = (qid) => async () => {
     await modle.addViews(qid)
     setActivePage(qid)
@@ -22,9 +24,24 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
     fetchTagNames()
   }, [tagList])
 
+  const handleUpvote = async () => {
+    const resp = await modle.addRep('question', qid, 1)
+    setReputation(resp.updated.rep)
+  }
+
+  const handleDownvote = async () => {
+    const resp = await modle.addRep('question', qid, -1)
+    setReputation(resp.updated.rep)
+  }
+
   if (unans && answers) return undefined
   return (
     <tr className="qRow">
+      <td className="qTD qV">
+        <button className="qvote" onClick={handleUpvote}>▲</button>
+        {reputation}
+        <button className="qvote" onClick={handleDownvote}>▼</button>
+      </td>
       <td className="qTD">
         {answers} answers <br />
         {views} views
@@ -49,7 +66,8 @@ Question.propTypes = {
   askedBy: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
   unans: PropTypes.bool.isRequired,
-  setActivePage: PropTypes.func.isRequired
+  setActivePage: PropTypes.func.isRequired,
+  rep: PropTypes.number.isRequired
 }
 
 export default function Questions ({ searchQuery, fun }) {
@@ -112,7 +130,7 @@ export default function Questions ({ searchQuery, fun }) {
       }
 
       // eslint-disable-next-line camelcase
-      const qL = qList.map(({ _id, answers, views, title, tags, asked_by, ask_date_time }) => {
+      const qL = qList.map(({ _id, answers, views, title, tags, asked_by, ask_date_time, rep }) => {
         if (sortOrder === 'Unanswered' && answers.length) return undefined
         return (
           <Question
@@ -126,6 +144,7 @@ export default function Questions ({ searchQuery, fun }) {
             key={_id}
             unans={sortOrder === 'Unanswered'}
             setActivePage={fun}
+            rep={rep}
           />
         )
       })

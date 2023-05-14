@@ -40,6 +40,18 @@ const QuestionSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  rep: {
+    type: Number,
+    default: 0
+  },
+  upvoters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  downvoters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   url: String
 })
 module.exports = mongoose.model('Question', QuestionSchema)

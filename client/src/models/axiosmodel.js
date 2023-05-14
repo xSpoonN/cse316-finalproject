@@ -410,3 +410,28 @@ export function formatDate (askDate, now = new Date()) {
     })} at ${formattedTime}`
   }
 }
+
+//
+//
+//
+
+/* ************* REP ************* */
+/** Updates the rep of a question/answer/comment
+ *
+ * @param {string} id id of question/answer/comment
+ * @param {string} type Type of object (question/answer/comment)
+ * @param {number} rep Rep to add/subtract
+ * @returns {Promise<Response>} Returns the user
+ */
+export function addRep (type, id, rep) {
+  return axios.post('http://localhost:8000/rep', {
+    type,
+    id,
+    rep
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
