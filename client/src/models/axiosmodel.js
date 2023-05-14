@@ -421,13 +421,15 @@ export function formatDate (askDate, now = new Date()) {
  * @param {string} id id of question/answer/comment
  * @param {string} type Type of object (question/answer/comment)
  * @param {number} rep Rep to add/subtract
+ * @param {string} email Email of user
  * @returns {Promise<Response>} Returns the user
  */
-export function addRep (type, id, rep) {
+export function addRep (type, id, rep, email) {
   return axios.post('http://localhost:8000/rep', {
     type,
     id,
-    rep
+    rep,
+    email
   }).then((response) => {
     console.log(response.data)
     return response.data

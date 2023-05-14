@@ -14,6 +14,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
   const [tagNames, setTagNames] = useState([])
   const [answers, setAnswers] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [voteStatus, setVoteStatus] = useState(0)
 
   const isFirstPage = currentPage === 1
   const isLastPage = answers === undefined ? true : currentPage * 5 >= answers.length
@@ -36,14 +37,46 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
     fetchData()
   }, [qid, currentPage])
 
+  useEffect(() => {
+    async function fetchVoteStatus () {
+      const user = await modle.getUser(email)
+      if (user) {
+        if (questionData?.upvoters?.includes(user._id)) setVoteStatus(1)
+        else if (questionData?.downvoters?.includes(user._id)) setVoteStatus(-1)
+        else setVoteStatus(0)
+      }
+    }
+    fetchVoteStatus()
+  }, [email, questionData])
+
   function handleNextPage () {
-    // modle.removeView(qid)
     setCurrentPage(p => p + 1)
   }
 
   function handlePrevPage () {
-    // modle.removeView(qid)
     setCurrentPage(p => p - 1)
+  }
+
+  const handleUpvote = async () => {
+    const resp = await modle.addRep('question', qid, 1, email)
+    setVoteStatus(1)
+    setQuestionData((data) => ({
+      ...data,
+      rep: resp.updated.rep,
+      upvoters: resp.updated.upvoters,
+      downvoters: resp.updated.downvoters
+    }))
+  }
+
+  const handleDownvote = async () => {
+    const resp = await modle.addRep('question', qid, -1, email)
+    setVoteStatus(-1)
+    setQuestionData((data) => ({
+      ...data,
+      rep: resp.updated.rep,
+      upvoters: resp.updated.upvoters,
+      downvoters: resp.updated.downvoters
+    }))
   }
 
   if (!questionData) return <p>Loading...</p>
@@ -54,8 +87,15 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
     <>
       <p id="ap_answercount"><b>{questionData.answers.length} answers</b></p>
       <p id="ap_questiontitle"><b>{questionData.title}</b></p>
-      <br />
+      <br/>
       <p id="ap_views"><b>{questionData.views} views</b></p>
+      <p id="ap_rep">
+        <button className={voteStatus === 1 ? 'avote upvoted' : 'avote'} onClick={handleUpvote}>▲</button>
+        <br />
+        {questionData.rep}
+        <br />
+        <button className={voteStatus === -1 ? 'avote downvoted' : 'avote'} onClick={handleDownvote}>▼</button>
+      </p>
       <p id="ap_questiontext" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>
       <p id="ap_askedby">
         <b>{questionData.asked_by}</b> asked<br />

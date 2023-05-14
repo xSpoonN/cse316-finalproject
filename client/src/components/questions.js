@@ -7,7 +7,7 @@ const modle = require('../models/axiosmodel.js')
 export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep, email, upvoters, downvoters }) {
   const [tagNames, setTagNames] = useState([])
   const [reputation, setReputation] = useState(rep)
-  const [voteStatus, setVoteStatus] = useState(0) // eslint-disable-line no-unused-vars
+  const [voteStatus, setVoteStatus] = useState(0)
   const setPage = (qid) => async () => {
     await modle.addViews(qid)
     setActivePage(qid)
@@ -36,7 +36,7 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
   }, [])
 
   const handleUpvote = async () => {
-    const resp = await modle.addRep('question', qid, 1)
+    const resp = await modle.addRep('question', qid, 1, email)
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp.updated.upvoters.includes(user._id)) setVoteStatus(1)
@@ -44,25 +44,22 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
   }
 
   const handleDownvote = async () => {
-    const resp = await modle.addRep('question', qid, -1)
+    const resp = await modle.addRep('question', qid, -1, email)
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp.updated.downvoters.includes(user._id)) setVoteStatus(-1)
     else setVoteStatus(0)
   }
 
-  const upvoteButtonClass = voteStatus === 1 ? 'qvote upvoted' : 'qvote'
-  const downvoteButtonClass = voteStatus === -1 ? 'qvote downvoted' : 'qvote'
-
   if (unans && answers) return undefined
   return (
     <tr className="qRow">
       <td className="qV">
-        <button className={upvoteButtonClass} onClick={handleUpvote}>▲</button>
+        <button className={voteStatus === 1 ? 'qvote upvoted' : 'qvote'} onClick={handleUpvote}>▲</button>
         <br/>
         {reputation}
         <br/>
-        <button className={downvoteButtonClass} onClick={handleDownvote}>▼</button>
+        <button className={voteStatus === -1 ? 'qvote downvoted' : 'qvote'} onClick={handleDownvote}>▼</button>
       </td>
       <td className="qTD">
         {answers} answers <br />
