@@ -106,7 +106,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
         <>
           <p className="contentheader">All Questions</p>
           <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
-          <Questions key={ searchQuery } searchQuery={ searchQuery } fun={ showAnswer(currentQid) }/>
+          <Questions key={ searchQuery } searchQuery={ searchQuery } fun={ showAnswer(currentQid)} email={email} />
         </>
       )
     case 'PostQuestion': /* console.log('Switching to PostQuestion') */

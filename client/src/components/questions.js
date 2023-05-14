@@ -4,10 +4,10 @@ import '../stylesheets/questions.css'
 import '../stylesheets/fakeStackOverflow.css'
 const modle = require('../models/axiosmodel.js')
 
-export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep }) {
+export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep, email, upvoters, downvoters }) {
   const [tagNames, setTagNames] = useState([])
   const [reputation, setReputation] = useState(rep)
-  /* const [voteStatus, setVoteStatus] = useState(0) // 0 = no vote, 1 = upvote, -1 = downvote */
+  const [voteStatus, setVoteStatus] = useState(0) // eslint-disable-line no-unused-vars
   const setPage = (qid) => async () => {
     await modle.addViews(qid)
     setActivePage(qid)
@@ -24,23 +24,45 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
     fetchTagNames()
   }, [tagList])
 
+  useEffect(() => {
+    async function fetchVoteStatus () {
+      const user = await modle.getUser(email)
+      if (user) {
+        if (upvoters?.includes(user._id)) setVoteStatus(1)
+        else if (downvoters?.includes(user._id)) setVoteStatus(-1)
+      }
+    }
+    fetchVoteStatus()
+  }, [])
+
   const handleUpvote = async () => {
     const resp = await modle.addRep('question', qid, 1)
     setReputation(resp.updated.rep)
+    const user = await modle.getUser(email)
+    if (resp.updated.upvoters.includes(user._id)) setVoteStatus(1)
+    else setVoteStatus(0)
   }
 
   const handleDownvote = async () => {
     const resp = await modle.addRep('question', qid, -1)
     setReputation(resp.updated.rep)
+    const user = await modle.getUser(email)
+    if (resp.updated.downvoters.includes(user._id)) setVoteStatus(-1)
+    else setVoteStatus(0)
   }
+
+  const upvoteButtonClass = voteStatus === 1 ? 'qvote upvoted' : 'qvote'
+  const downvoteButtonClass = voteStatus === -1 ? 'qvote downvoted' : 'qvote'
 
   if (unans && answers) return undefined
   return (
     <tr className="qRow">
-      <td className="qTD qV">
-        <button className="qvote" onClick={handleUpvote}>▲</button>
+      <td className="qV">
+        <button className={upvoteButtonClass} onClick={handleUpvote}>▲</button>
+        <br/>
         {reputation}
-        <button className="qvote" onClick={handleDownvote}>▼</button>
+        <br/>
+        <button className={downvoteButtonClass} onClick={handleDownvote}>▼</button>
       </td>
       <td className="qTD">
         {answers} answers <br />
@@ -67,10 +89,13 @@ Question.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   unans: PropTypes.bool.isRequired,
   setActivePage: PropTypes.func.isRequired,
-  rep: PropTypes.number.isRequired
+  rep: PropTypes.number.isRequired,
+  email: PropTypes.string.isRequired,
+  upvoters: PropTypes.array.isRequired,
+  downvoters: PropTypes.array.isRequired
 }
 
-export default function Questions ({ searchQuery, fun }) {
+export default function Questions ({ searchQuery, fun, email }) {
   const [sortOrder, setSortOrder] = useState('Newest')
   const [questionList, setQuestionList] = useState([])
   const [qCount, setQCount] = useState(0)
@@ -130,7 +155,7 @@ export default function Questions ({ searchQuery, fun }) {
       }
 
       // eslint-disable-next-line camelcase
-      const qL = qList.map(({ _id, answers, views, title, tags, asked_by, ask_date_time, rep }) => {
+      const qL = qList.map(({ _id, answers, views, title, tags, asked_by, ask_date_time, rep, upvoters, downvoters }) => {
         if (sortOrder === 'Unanswered' && answers.length) return undefined
         return (
           <Question
@@ -145,6 +170,9 @@ export default function Questions ({ searchQuery, fun }) {
             unans={sortOrder === 'Unanswered'}
             setActivePage={fun}
             rep={rep}
+            email={email}
+            upvoters={upvoters}
+            downvoters={downvoters}
           />
         )
       })
@@ -206,5 +234,6 @@ export default function Questions ({ searchQuery, fun }) {
 }
 Questions.propTypes = {
   searchQuery: PropTypes.string,
-  fun: PropTypes.func.isRequired
+  fun: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired
 }
