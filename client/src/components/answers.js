@@ -238,21 +238,7 @@ export function Answer ({ answer, email }) {
       </tr>
       {
         commentData.slice((currentPage - 1) * 3, (currentPage - 1) * 3 + 3).map((comment) => (
-          <tr key={comment._id} className="aRow">
-            <td className="acV">
-              <button>▲</button>
-              <br/>
-              0
-              <br/>
-              <button>▼</button>
-            </td>
-            <td className="aComment aComSize" dangerouslySetInnerHTML={{ __html: comment.text }} />
-            <td className="aComSize">
-              <b>{comment.cum_by}</b> commented
-              <br />
-              {modle.formatDate(new Date(comment.cum_date_time))}
-            </td>
-          </tr>
+          <Comment key={comment._id} comment={comment} email={email}/>
         ))
       }
       {(comments.length > 0)
@@ -280,5 +266,48 @@ export function Answer ({ answer, email }) {
 }
 Answer.propTypes = {
   answer: PropTypes.object.isRequired,
+  email: PropTypes.string.isRequired
+}
+
+export function Comment ({ comment, email }) {
+  const [voteStatus, setVoteStatus] = useState(0)
+
+  useEffect(() => {
+    async function fetchVoteStatus () {
+      const user = await modle.getUser(email)
+      if (user) {
+        if (comment?.upvoters?.includes(user._id)) setVoteStatus(1)
+        else if (comment?.downvoters?.includes(user._id)) setVoteStatus(-1)
+        else setVoteStatus(0)
+      }
+    }
+    fetchVoteStatus()
+  }, [email, comment])
+
+  const handleUpvote = async () => {
+    const resp = await modle.addRep('comment', comment._id, 1, email)
+    setVoteStatus(1)
+    console.log(resp.updated.reputation)
+  }
+
+  return (
+    <tr className="aRow">
+      <td className="acV">
+        <button className={voteStatus === 1 ? 'avote upvoted' : 'avote'} onClick={handleUpvote}>▲</button>
+        <br/>
+        0
+        <br/>
+      </td>
+      <td className="aComment aComSize" dangerouslySetInnerHTML={{ __html: comment.text }} />
+      <td className="aComSize">
+        <b>{comment.cum_by}</b> commented
+        <br />
+        {modle.formatDate(new Date(comment.cum_date_time))}
+      </td>
+    </tr>
+  )
+}
+Comment.propTypes = {
+  comment: PropTypes.object.isRequired,
   email: PropTypes.string.isRequired
 }
