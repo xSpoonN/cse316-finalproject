@@ -207,10 +207,6 @@ function AdminList ({ setError, setEmailOverride }) {
     }
   }
 
-  const setUser = (email) => () => {
-    setEmailOverride(email)
-  }
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -243,7 +239,7 @@ function AdminList ({ setError, setEmailOverride }) {
             <tr className="pRow" key={user._id}>
               <td className="pTD paInfo">{user.isadmin ? 'Admin' : 'User'}</td>
               <td className="pTD paScore">{user.reputation} reputation</td>
-              <td className="pTD paTitle"><p className='plink' onClick={setUser(user.email)}>{user.username}</p></td>
+              <td className="pTD paTitle"><p className='plink' onClick={() => setEmailOverride(user.email)}>{user.username}</p></td>
               <td className="pTD paEmail">{user.email}</td>
               <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
               <td className="pTD paDel">
