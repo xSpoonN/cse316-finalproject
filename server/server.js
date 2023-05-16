@@ -397,6 +397,60 @@ app.post('/users', async (req, res) => {
   })
 })
 
+/* Delete User */
+app.post('/deluser/:id', async (req, res) => {
+  console.log('User DELETE request received')
+  try {
+    const userId = req.params.id
+
+    // Remove user
+    const deletedUser = await Users.findById(userId)
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    
+    // Remove user's questions
+    const questions = await Questions.find({ asked_by_email: deletedUser.email })
+    for (const question of questions) {
+      // Remove question's answers
+      const answers = await Answers.find({ _id: { $in: question.answers } })
+      for (const answer of answers) {
+        // Remove answer's comments
+        const answerComments = await Comments.find({ _id: { $in: answer.comments } })
+        for (const comment of answerComments) {
+          await comment.deleteOne()
+        }
+      }
+      // Remove question's answers
+      await Answers.deleteMany({ _id: { $in: question.answers } })
+      // Remove question
+      await question.deleteOne()
+    }
+    
+    // Remove user's answers
+    const answers = await Answers.find({ ans_by_email: deletedUser.email })
+    for (const answer of answers) {
+      // Remove answer's comments
+      const answerComments = await Comments.find({ _id: { $in: answer.comments } })
+      for (const comment of answerComments) {
+        await comment.deleteOne()
+      }
+      // Remove answer
+      await answer.deleteOne()
+    }
+
+    // Remove user's comments
+    await Comments.deleteMany({ cum_by: deletedUser.username }) // update comments to store user id instead of username
+
+    await deletedUser.deleteOne()
+    
+    res.json({ message: 'User and associated data deleted' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
 /* Get User by Email */
 app.get('/users/:email', async (req, res) => {
   console.log('User GET request received')

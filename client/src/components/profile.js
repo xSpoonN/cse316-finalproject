@@ -188,6 +188,11 @@ AnsweredQuestionList.propTypes = {
 function AdminList () {
   const [userList, setUserList] = useState([])
 
+  const deleteUser = (id) => async () => {
+    await modle.deleteUser(id)
+    setUserList(userList.filter(user => user._id !== id))
+  }
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -223,7 +228,7 @@ function AdminList () {
             <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
             <td className="pTD paEmail">{user.email}</td>
             <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
-            <td className="pTD paDel">{!user.isadmin && <button className="userdelbutt">Delete</button>}</td>
+            <td className="pTD paDel">{!user.isadmin && <button className="userdelbutt" onClick={deleteUser(user._id)}>Delete</button>}</td>
           </tr>
         ))}
       </tbody>
