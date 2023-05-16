@@ -144,13 +144,13 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       return (
         <>
         {email && <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>}
-        <AllTags setSearchQuery={setSearch} />
+        <AllTags setSearchQuery={setSearch} setError={setError}/>
         </>
       )
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setSearchQuery={setSearch} showPrioAnswer={showPrioAnswer}/>
+        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setSearchQuery={setSearch} showPrioAnswer={showPrioAnswer} setError={setError}/>
         </>
       )
   }

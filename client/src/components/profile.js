@@ -185,7 +185,7 @@ AnsweredQuestionList.propTypes = {
   showPrioAnswer: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer }) {
+export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer, setError }) {
   const [user, setUser] = useState(null)
   const [showTags, setShowTags] = useState(false)
   const [showAnswers, setShowAnswers] = useState(false)
@@ -225,7 +225,7 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery,
       {showAnswers && <AnsweredQuestionList email={user.email} showPrioAnswer={showPrioAnswer}/>}
       <br/>
       <p className="plink" onClick={toggleTags}><u>{showTags ? 'Hide' : 'Show'} Tags</u></p>
-      {showTags && <AllTags setSearchQuery={setSearchQuery} email={user.email}/>}
+      {showTags && <AllTags setSearchQuery={setSearchQuery} email={user.email} setError={setError}/>}
     </>
   )
 }
@@ -234,5 +234,6 @@ Profile.propTypes = {
   setPage: PropTypes.func.isRequired,
   setUpdateQid: PropTypes.func.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
-  showPrioAnswer: PropTypes.func.isRequired
+  showPrioAnswer: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired
 }

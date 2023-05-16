@@ -298,6 +298,20 @@ app.post('/tags', async (req, res) => {
   }
 })
 
+/* Rename a Tag */
+app.post('/renameTag/:tagId', async (req, res) => {
+  console.log('Tag PUT request received')
+  try {
+    const tag = await Tags.findByIdAndUpdate(req.params.tagId, { name: req.body.name })
+    if (!tag) {
+      return res.status(404).json({ message: 'Tag not found' })
+    }
+    res.json(tag)
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+})
+
 /* Login User */
 app.post('/userLogin', async (req, res) => {
   console.log('User GET login request received')
