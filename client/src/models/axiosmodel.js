@@ -99,6 +99,26 @@ export function addTag (tag, creator) {
   })
 }
 
+export function renameTag (id, newname) {
+  return axios.post(`http://localhost:8000/renameTag/${id}`, {
+    name: newname
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e?.response)
+  })
+}
+
+export function removeTag (id) {
+  return axios.post(`http://localhost:8000/removeTag/${id}`).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e?.response)
+  })
+}
+
 //
 //
 //
@@ -288,6 +308,15 @@ export function editQuestion (qid, title, text, tags) {
  */
 export async function getQuestionCountByTagId (tagId) {
   return (await getQuestions()).filter((q) => q.tags.includes(tagId)).length
+}
+
+/**
+ * Gets the list of questions for a tag
+ * @param {string} tagId
+ * @returns {Promise<number>} Returns the questions for a tag
+ */
+export async function getQuestionsByTagId (tagId) {
+  return (await getQuestions()).filter((q) => q.tags.includes(tagId))
 }
 
 //

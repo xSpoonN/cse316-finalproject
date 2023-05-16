@@ -40,3 +40,24 @@
 .tagqcount {
     text-align: center;
 }
+
+.tagdelbutt {
+    padding: 6px;
+    position: relative;
+    font-size: medium;
+    background-color: crimson;
+    color: white;
+    border-color: crimson;
+    float:right;
+    cursor:pointer;
+    bottom: 80%
+}
+
+.tageditbutt {
+    /* position: relative;
+    font-size: medium;
+    background-color:cornflowerblue;
+    color: white;
+    border-color: cornflowerblue; */
+    cursor:pointer;
+}
