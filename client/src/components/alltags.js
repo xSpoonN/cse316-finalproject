@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
-export default function AllTags ({ setSearchQuery, qidfilter }) {
+export default function AllTags ({ setSearchQuery, email = '' }) {
   const [tags, setTags] = useState([])
 
   useEffect(() => {
     async function updateTags () {
-      const tagList = qidfilter === '' ? await modle.getAllTags() : await modle.getTagsBy(qidfilter)
+      const tagList = email === '' ? await modle.getAllTags() : await modle.getTagsByEmail(email)
       setTags(await Promise.all(
         tagList.map(async (tag, index) => {
           const questionCount = await modle.getQuestionCountByTagId(tag._id)
@@ -21,7 +21,7 @@ export default function AllTags ({ setSearchQuery, qidfilter }) {
   return (
     <>
       <p id="t_tagcount">{tags.length} Tags</p>
-      <p id="t_alltags">All Tags</p>
+      <p id="t_alltags">{email === '' ? 'All' : 'Your'} Tags</p>
       <br /><br /><br />
       <div id="tagcontainer">{tags}</div>
     </>
@@ -29,7 +29,7 @@ export default function AllTags ({ setSearchQuery, qidfilter }) {
 }
 AllTags.propTypes = {
   setSearchQuery: PropTypes.func.isRequired,
-  qidfilter: PropTypes.string.isRequired
+  email: PropTypes.string
 }
 
 export function Tag ({ tag, index, questionCount, setSearchQuery }) {

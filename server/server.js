@@ -223,16 +223,20 @@ app.get('/tags/:tagId', async (req, res) => {
   }
 })
 
-/* Get tag by QID */
-app.get('/tagsby/:qid', async (req, res) => {
-  console.log('Tag/:qid GET request received')
+/* Get tags by User Email */
+app.get('/tagsby/:email', async (req, res) => {
+  console.log('Tags by Email GET request received');
   try {
-    const question = await Questions.findById(req.params.qid)
-    const tags = await Tags.find({_id: {$in: question.tags}})
-    res.json(tags)
+    const user = await Users.findOne({ email: req.params.email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const tags = await Tags.find({ createdBy: user._id });
+    res.json(tags);
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: err.message })
+    console.error(err);
+    res.status(500).json({ message: 'Error retrieving tags', error: err.message });
   }
 })
 

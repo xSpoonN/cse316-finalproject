@@ -50,8 +50,8 @@ export async function getAllTags () {
   return resp.data
 }
 
-export async function getTagsBy (qid) {
-  const resp = await axios.get(`http://localhost:8000/tagsby/${qid}`)
+export async function getTagsByEmail (email) {
+  const resp = await axios.get(`http://localhost:8000/tagsby/${email}`)
   return resp.data
 }
 

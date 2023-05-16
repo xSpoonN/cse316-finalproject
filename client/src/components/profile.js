@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import AllTags from './alltags.js'
 import '../stylesheets/profile.css'
 const modle = require('../models/axiosmodel.js')
 
@@ -95,8 +96,10 @@ UserQuestionList.propTypes = {
   setUpdateQid: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email, setPage, setUpdateQid, setTagFilter }) {
+export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery }) {
   const [user, setUser] = useState(null)
+  const [showTags, setShowTags] = useState(false)
+  const [showAnswers, setShowAnswers] = useState(false)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -110,6 +113,14 @@ export default function Profile ({ email, setPage, setUpdateQid, setTagFilter })
     fetchUser()
   }, [email])
 
+  const toggleTags = () => {
+    setShowTags(b => !b)
+  }
+
+  const toggleAnswers = () => {
+    setShowAnswers(b => !b)
+  }
+
   if (!user) {
     return <p>Loading user profile...</p>
   }
@@ -120,6 +131,11 @@ export default function Profile ({ email, setPage, setUpdateQid, setTagFilter })
       <p id="pro_age">{'Account created: ' + modle.formatDate(new Date(user.created_date_time))}</p>
       <p id="pro_rep">{'Reputation: ' + user.reputation}</p>
       <UserQuestionList email={user.email} setPage={setPage} setUpdateQid={setUpdateQid}/>
+      <br/><br/>
+      <p className="plink" onClick={toggleAnswers}><u>{showAnswers ? 'Hide' : 'Show'} Answers</u></p>
+      <br/>
+      <p className="plink" onClick={toggleTags}><u>{showTags ? 'Hide' : 'Show'} Tags</u></p>
+      {showTags && <AllTags setSearchQuery={setSearchQuery} email={user.email}/>}
     </>
   )
 }
@@ -127,5 +143,5 @@ Profile.propTypes = {
   email: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   setUpdateQid: PropTypes.func.isRequired,
-  setTagFilter: PropTypes.func.isRequired
+  setSearchQuery: PropTypes.func.isRequired
 }

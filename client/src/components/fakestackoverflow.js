@@ -84,7 +84,6 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   }
   const [currentQid, setQid] = useState('q1')
   const [updateQid, setUpdateQid] = useState('')
-  const [tagFilter, setTagFilter] = useState('')
 
   const loginGuest = () => {
     setEmail('')
@@ -137,13 +136,13 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       return (
         <>
         <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
-        <AllTags setSearchQuery={setSearch} qidfilter={tagFilter} />
+        <AllTags setSearchQuery={setSearch} />
         </>
       )
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setTagFilter={setTagFilter}/>
+        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setSearchQuery={setSearch}/>
         </>
       )
   }
