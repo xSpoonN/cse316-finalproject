@@ -67,7 +67,13 @@ Sidebar.propTypes = {
 }
 
 export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, email, setEmail }) {
-  const switchToPage = (page) => () => setActivePage(page)
+  const switchToPage = (page) => () => {
+    setUpdateQid('')
+    setActivePage(page)
+  }
+  const showUpdateQuestion = () => {
+    setActivePage('PostQuestion')
+  }
   const showAnswer = () => (id) => {
     setQid(id)
     setActivePage('Answers')
@@ -77,6 +83,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     setActivePage('Questions')
   }
   const [currentQid, setQid] = useState('q1')
+  const [updateQid, setUpdateQid] = useState('')
 
   const loginGuest = () => {
     setEmail('')
@@ -111,7 +118,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       )
     case 'PostQuestion': /* console.log('Switching to PostQuestion') */
       return (
-        <PostQuestion setActivePage={setActivePage} email={email}/>
+        <PostQuestion setActivePage={setActivePage} email={email} updateQid={updateQid} setUpdateQid={setUpdateQid}/>
       )
     case 'Answers': /* console.log('Switching to Answers') */
       return (
@@ -135,7 +142,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile email={email} setPage={showAnswer('!/^((?<=[\\w+?#.])-?(?=[\\w+?#.])|[\\w+?#.]){1,10}(\\s((?<=[\\w+?#.])-?(?=[\\w+?#.])|[\\w+?#.]){1,10}){0,4}$/')}/>
+        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion}/>
         </>
       )
   }

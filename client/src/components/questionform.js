@@ -14,7 +14,7 @@ export function validateLinks (text) {
   return null
 }
 
-export default function QuestionForm ({ setActivePage, email }) {
+export default function QuestionForm ({ setActivePage, email, updateQid, setUpdateQid }) {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const [tags, setTags] = useState('')
@@ -40,7 +40,12 @@ export default function QuestionForm ({ setActivePage, email }) {
         // Todo: Check Reputation of the creating user.
       }))
 
-      await modle.addQuestion(title, text, tagIds, user.username, email)
+      if (updateQid === '') {
+        await modle.addQuestion(title, text, tagIds, user.username, email)
+      } else {
+        // Do stuff here
+        setUpdateQid('')
+      }
       setActivePage('Questions')
     }
   }
@@ -80,6 +85,7 @@ export default function QuestionForm ({ setActivePage, email }) {
   return (
     <form onSubmit={handleSubmit}>
       <div id="askquestion">
+        {updateQid !== '' && <h1>{updateQid}</h1>}
         <h2>Question Title*</h2>
         <p style={{ fontStyle: 'italic' }}>Limit title to 100 characters or less</p>
         <input type="text" name="questiontitle" value={title} onChange={handleTitleChange} maxLength={100} required />
@@ -104,5 +110,7 @@ export default function QuestionForm ({ setActivePage, email }) {
 }
 QuestionForm.propTypes = {
   setActivePage: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  updateQid: PropTypes.string.isRequired,
+  setUpdateQid: PropTypes.func.isRequired
 }

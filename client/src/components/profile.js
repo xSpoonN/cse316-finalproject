@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import '../stylesheets/profile.css'
 const modle = require('../models/axiosmodel.js')
 
-function UserQuestion ({ question, setPage }) {
+function UserQuestion ({ question, setPage, setUpdateQid }) {
   const setAPage = (qid) => () => {
-    setPage(qid)
+    setUpdateQid(qid)
+    setPage()
   }
   return (
     <>
@@ -19,10 +20,11 @@ function UserQuestion ({ question, setPage }) {
 }
 UserQuestion.propTypes = {
   question: PropTypes.object.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  setUpdateQid: PropTypes.func.isRequired
 }
 
-function UserQuestionList ({ email, setPage }) {
+function UserQuestionList ({ email, setPage, setUpdateQid }) {
   const [questionList, setQuestionList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -55,7 +57,7 @@ function UserQuestionList ({ email, setPage }) {
           <td className="pTD pDate"></td>
         </tr>
         {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
-          <UserQuestion key={question._id} question={question} setPage={setPage}/>
+          <UserQuestion key={question._id} question={question} setPage={setPage} setUpdateQid={setUpdateQid}/>
         ))}
       </tbody>
     </table>
@@ -66,10 +68,11 @@ function UserQuestionList ({ email, setPage }) {
 }
 UserQuestionList.propTypes = {
   email: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  setUpdateQid: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email, setPage }) {
+export default function Profile ({ email, setPage, setUpdateQid }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -93,11 +96,12 @@ export default function Profile ({ email, setPage }) {
       <h2>{user.username + ` (${user.email})`}</h2>
       <p id="pro_age">{'Account created: ' + modle.formatDate(new Date(user.created_date_time))}</p>
       <p id="pro_rep">{'Reputation: ' + user.reputation}</p>
-      <UserQuestionList email={user.email} setPage={setPage}/>
+      <UserQuestionList email={user.email} setPage={setPage} setUpdateQid={setUpdateQid}/>
     </>
   )
 }
 Profile.propTypes = {
   email: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired
+  setPage: PropTypes.func.isRequired,
+  setUpdateQid: PropTypes.func.isRequired
 }
