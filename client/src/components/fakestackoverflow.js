@@ -1,5 +1,5 @@
 /* import Model from '../models/model.js' */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Questions from './questions.js'
 import PostQuestion from './questionform.js'
@@ -168,6 +168,15 @@ export default function fakeStackOverflow () {
     setActivePage('Landing')
   }
 
+  useEffect(() => {
+    if (error) {
+      /* const timer =  */setTimeout(() => {
+        setError('')
+      }, 3000) // Change the delay as needed for the desired animation duration
+      /* return () => clearTimeout(timer) */
+    }
+  }, [error])
+
   return (
     <div>
       {<Header
@@ -175,7 +184,11 @@ export default function fakeStackOverflow () {
         loggedIn={email !== undefined}
         className="header"
       />}
-      {error && <div className="error">{error}</div>}
+      {(
+        <div className={`error ${error ? 'fade-in' : 'fade-out'}`}>
+          {error}
+        </div>
+      )}
       {email !== undefined &&
         <Sidebar
           pageChange={(page) => setActivePage(page)}
