@@ -185,6 +185,53 @@ AnsweredQuestionList.propTypes = {
   showPrioAnswer: PropTypes.func.isRequired
 }
 
+function AdminList () {
+  const [userList, setUserList] = useState([])
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await modle.getAllUsers()
+        setUserList(fetchedUsers)
+      } catch (error) {
+        console.error('Error fetching users:', error)
+      }
+    }
+    fetchUsers()
+  }, [])
+
+  if (!userList) {
+    return <p>Loading user list...</p>
+  }
+
+  return (
+    <>
+    <table id="adminTable">
+      <tbody>
+        <tr className="pRow">
+          <td className="pTD paInfo"><b>Type</b></td>
+          <td className="pTD paScore"><b>Rep</b></td>
+          <td className="pTD paTitle"><b>Username</b></td>
+          <td className="pTD paEmail"><b>Email</b></td>
+          <td className="pTD paDate"><b>Date Created</b></td>
+          <td className="pTD paDel"><b>Delete</b></td>
+        </tr>
+        {userList.map((user) => (
+          <tr className="pRow" key={user._id}>
+            <td className="pTD paInfo">{user.isadmin ? 'Admin' : 'User'}</td>
+            <td className="pTD paScore">{user.reputation} reputation</td>
+            <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
+            <td className="pTD paEmail">{user.email}</td>
+            <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
+            <td className="pTD paDel">{!user.isadmin && <button className="userdelbutt">Delete</button>}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    </>
+  )
+}
+
 export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer, setError }) {
   const [user, setUser] = useState(null)
   const [showTags, setShowTags] = useState(false)
@@ -217,6 +264,7 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery,
   return (
     <>
       <h2>{user.username + ` (${user.email})`}</h2>
+      {user.isadmin && <p style={{ color: 'red' }}>Admin Account</p>}
       <p id="pro_age">{'Account created: ' + modle.formatDate(new Date(user.created_date_time))}</p>
       <p id="pro_rep">{'Reputation: ' + user.reputation}</p>
       <UserQuestionList email={user.email} setPage={setPage} setUpdateQid={setUpdateQid}/>
@@ -226,6 +274,13 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery,
       <br/>
       <p className="plink" onClick={toggleTags}><u>{showTags ? 'Hide' : 'Show'} Tags</u></p>
       {showTags && <AllTags setSearchQuery={setSearchQuery} email={user.email} setError={setError}/>}
+      {user.isadmin &&
+      <>
+        <br/><br/>
+        <h3><u>Admin Panel</u></h3>
+        <AdminList/>
+      </>
+      }
     </>
   )
 }

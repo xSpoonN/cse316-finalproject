@@ -410,6 +410,18 @@ app.get('/users/:email', async (req, res) => {
   }
 })
 
+/* Get Users */
+app.get('/users', async (req, res) => {
+  console.log('Users GET request received')
+  try {
+    const users = await Users.find()
+    res.status(201).json(users)
+  }
+  catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 /* Get Comments by Answer ID */
 app.get('/comments/:aid', async (req, res) => {
   console.log('Comments GET request received')
