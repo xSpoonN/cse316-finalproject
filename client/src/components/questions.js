@@ -39,7 +39,7 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
     const resp = await modle.addRep('question', qid, 1, email)
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
-    if (resp.updated.upvoters.includes(user._id)) setVoteStatus(1)
+    if (resp?.updated.upvoters.includes(user._id)) setVoteStatus(1)
     else setVoteStatus(0)
   }
 
@@ -47,7 +47,7 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
     const resp = await modle.addRep('question', qid, -1, email)
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
-    if (resp.updated.downvoters.includes(user._id)) setVoteStatus(-1)
+    if (resp?.updated.downvoters.includes(user._id)) setVoteStatus(-1)
     else setVoteStatus(0)
   }
 

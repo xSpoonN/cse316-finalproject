@@ -303,7 +303,8 @@ export function addComment (aid, text, user) {
     /* console.log(response.data) */
     return response.data
   }).catch((e) => {
-    console.error(e)
+    if (!e.response) console.error(e)
+    return e.response.data
   })
 }
 
@@ -434,6 +435,7 @@ export function addRep (type, id, rep, email) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    if (!e.response) console.error(e)
+    return e.response.data
   })
 }

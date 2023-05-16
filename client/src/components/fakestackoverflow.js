@@ -66,7 +66,7 @@ Sidebar.propTypes = {
   logout: PropTypes.func.isRequired
 }
 
-export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, email, setEmail }) {
+export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, email, setEmail, setError }) {
   const switchToPage = (page) => () => setActivePage(page)
   const showAnswer = () => (id) => {
     setQid(id)
@@ -146,17 +146,24 @@ Page.propTypes = {
   setActivePage: PropTypes.func.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
   email: PropTypes.string,
-  setEmail: PropTypes.func.isRequired
+  setEmail: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired
 }
 
 export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Landing')
   const [email, setEmail] = useState(undefined)
+  const [error, setError] = useState('')
 
   const logout = () => {
     setEmail(undefined)
     setActivePage('Landing')
+  }
+
+  const handleErrorTemp = () => {
+    if (!error) setError('ERROR!')
+    else setError('')
   }
 
   return (
@@ -166,6 +173,7 @@ export default function fakeStackOverflow () {
         loggedIn={email !== undefined}
         className="header"
       />}
+      {error && <div className="error">{error}</div>}
       {email !== undefined &&
         <Sidebar
           pageChange={(page) => setActivePage(page)}
@@ -175,6 +183,7 @@ export default function fakeStackOverflow () {
           email={email}
           logout={logout}
         />}
+      <button className="content" onClick={handleErrorTemp}>error!</button>
       <div className="content">
         <Page
           searchQuery={searchQuery}
@@ -183,6 +192,7 @@ export default function fakeStackOverflow () {
           setSearchQuery={setSearchQuery}
           email={email}
           setEmail={setEmail}
+          setError={setError}
         />
       </div>
     </div>
