@@ -198,6 +198,15 @@ export function getQuestions () { /* Gets all questions */
   })
 }
 
+export function getQuestionsAnsweredBy (email) {
+  return axios.get(`http://localhost:8000/questionsAnsweredBy/${email}`).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 /**
  * Gets all questions for a user
  * @param {string} email

@@ -32,6 +32,7 @@ AllTags.propTypes = {
   email: PropTypes.string
 }
 
+// Todo: if email is set, allow editing/deleting
 export function Tag ({ tag, index, questionCount, setSearchQuery }) {
   return (
     <div className="tagbox" style={{ gridColumn: `${index % 3 + 1} / span 1`, gridRow: 'auto' }}>
