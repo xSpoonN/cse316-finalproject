@@ -401,6 +401,18 @@ export function loginUser (email, password) {
     throw e
   })
 }
+
+export function auth (token) {
+  return axios.post('http://localhost:8000/auth/', {
+    token
+  }).then((response) => {
+    /* console.log(response.data) */
+    return response
+  }).catch((e) => {
+    console.error(e?.response)
+  })
+}
+
 /**
  * Logs out a user
  * @param {Date} askDate
