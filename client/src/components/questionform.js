@@ -109,6 +109,7 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
 
   return (
     <>
+    {updateQid !== '' && <button className="delbutt" onClick={deleteQuestion}>Delete Question</button>}
     <form onSubmit={handleSubmit}>
       <div id="askquestion">
         <h2>Question Title*</h2>
@@ -131,7 +132,6 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
         <p style={{ textAlign: 'right' }}>* indicates mandatory fields</p>
       </div>
     </form>
-    {updateQid !== '' && <button onClick={deleteQuestion}>Delete Question</button>}
     </>
   )
 }
