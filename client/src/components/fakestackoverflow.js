@@ -15,6 +15,7 @@ import '../stylesheets/questions.css'
 import '../stylesheets/answerform.css'
 import '../stylesheets/answers.css'
 import '../stylesheets/alltags.css'
+const modle = require('../models/axiosmodel.js')
 
 export function Header ({ searchQueryChange, loggedIn }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -166,8 +167,22 @@ export default function fakeStackOverflow () {
 
   const logout = () => {
     setEmail(undefined)
+    localStorage.removeItem('token')
     setActivePage('Landing')
   }
+
+  useEffect(() => {
+    async function checkLogin () {
+      console.log(localStorage.getItem('token'))
+      const email = await modle.auth(localStorage.getItem('token'))
+      console.log(email)
+      if (email?.data?.email) {
+        setEmail(email.data.email)
+        setActivePage('Questions')
+      } else console.log('not logged in')
+    }
+    checkLogin()
+  }, [])
 
   useEffect(() => {
     if (error.msg) {

@@ -4,7 +4,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const session = require('express-session')
+const jwt = require('jsonwebtoken')
 const Questions = require('./models/questions')
 const Answers = require('./models/answers')
 const Tags = require('./models/tags')
@@ -12,17 +12,13 @@ const Comments = require('./models/comments')
 const Users = require('./models/users')
 
 const saltRounds = 10
+const secretKey = 'hehexdd'
 
 // Create a new Express app
 const app = express()
 app.use(express.json())
 
 /* Session */
-app.use(session({
-  secret: 'hehexd',
-  resave: false,
-  saveUninitialized: false
-}))
 
 /* Allow Same Host */
 app.use(function (req, res, next) {
@@ -292,11 +288,31 @@ app.post('/userLogin', async (req, res) => {
         if (err) {
           return res.status(400).json({ message: err.message })
         } else if (result == true) {
-          return res.status(200).json({ message: 'User logged in', user: user })
+          const token = jwt.sign({ email: user.email }, secretKey, { expiresIn: '1h' })
+          return res.status(200).json({ message: 'User logged in', user: user, token: token })
         } else {
           return res.status(400).json({ message: 'Incorrect password' })
         }
       })
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
+app.post('/auth', async (req, res) => {
+  console.log('User AUTH request received')
+  console.log(req.body.token)
+  try {
+    const token = req.body.token
+    const decoded = jwt.verify(token, secretKey)
+    console.log(decoded)
+    const user = await Users.findOne({ email: decoded.email })
+    if (!user) {
+      return res.status(400).json({ message: 'Cannot find user' })
+    } else {
+      console.log(user)
+      return res.status(200).json({ message: 'User logged in', user: user, email: decoded.email })
     }
   } catch (err) {
     res.status(500).json({ message: err.message })

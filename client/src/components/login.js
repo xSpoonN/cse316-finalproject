@@ -19,6 +19,7 @@ export default function LoginPage ({ login }) {
       if (resp.status === 200) {
         // Set the login status to true
         login(resp.data.user.email)
+        localStorage.setItem('token', resp.data.token)
       } else {
         setError(resp.data.message)
       }
