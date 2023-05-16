@@ -187,14 +187,24 @@ AnsweredQuestionList.propTypes = {
 
 function AdminList ({ setError }) {
   const [userList, setUserList] = useState([])
+  const [confirmDeleteId, setConfirmDeleteId] = useState('')
 
   const adminDelete = () => {
     setError({ msg: 'You cannot delete an admin account!', duration: 3000 })
   }
 
-  const deleteUser = (id) => async () => {
+  const deleteUser = async (id) => {
     await modle.deleteUser(id)
-    setUserList(userList.filter(user => user._id !== id))
+    setUserList(userList.filter((user) => user._id !== id))
+  }
+
+  const handleDelete = (id) => {
+    if (confirmDeleteId === id) {
+      deleteUser(id)
+      setConfirmDeleteId('')
+    } else {
+      setConfirmDeleteId(id)
+    }
   }
 
   useEffect(() => {
@@ -215,28 +225,45 @@ function AdminList ({ setError }) {
 
   return (
     <>
-    <table id="adminTable">
-      <tbody>
-        <tr className="pRow">
-          <td className="pTD paInfo"><b>Type</b></td>
-          <td className="pTD paScore"><b>Rep</b></td>
-          <td className="pTD paTitle"><b>Username</b></td>
-          <td className="pTD paEmail"><b>Email</b></td>
-          <td className="pTD paDate"><b>Date Created</b></td>
-          <td className="pTD paDel"><b>Delete</b></td>
-        </tr>
-        {userList.map((user) => (
-          <tr className="pRow" key={user._id}>
-            <td className="pTD paInfo">{user.isadmin ? 'Admin' : 'User'}</td>
-            <td className="pTD paScore">{user.reputation} reputation</td>
-            <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
-            <td className="pTD paEmail">{user.email}</td>
-            <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
-            <td className="pTD paDel"><button className="userdelbutt" onClick={user.isadmin ? adminDelete : deleteUser(user._id)}>Delete</button></td>
+      <table id="adminTable">
+        <tbody>
+          <tr className="pRow">
+            <td className="pTD paInfo"><b>Type</b></td>
+            <td className="pTD paScore"><b>Rep</b></td>
+            <td className="pTD paTitle"><b>Username</b></td>
+            <td className="pTD paEmail"><b>Email</b></td>
+            <td className="pTD paDate"><b>Date Created</b></td>
+            <td className="pTD paDel"><b>Delete</b></td>
           </tr>
-        ))}
-      </tbody>
-    </table>
+          {userList.map((user) => (
+            <tr className="pRow" key={user._id}>
+              <td className="pTD paInfo">{user.isadmin ? 'Admin' : 'User'}</td>
+              <td className="pTD paScore">{user.reputation} reputation</td>
+              <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
+              <td className="pTD paEmail">{user.email}</td>
+              <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
+              <td className="pTD paDel">
+                {confirmDeleteId === user._id
+                  ? (
+                  <>
+                    <button className="usercanbutt" onClick={() => setConfirmDeleteId('')}>
+                      Cancel
+                    </button>
+                    <button className="userdelbutt" onClick={() => handleDelete(user._id)}>
+                      Confirm
+                    </button>
+                  </>
+                    )
+                  : (
+                  <button className="userdelbutt" onClick={user.isadmin ? adminDelete : () => handleDelete(user._id)}>
+                    Delete
+                  </button>
+                    )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   )
 }
