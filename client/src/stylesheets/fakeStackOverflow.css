@@ -107,6 +107,18 @@ body { /* Applies this font globally */
     top: 15px;
 }
 
+.delbutt {
+    padding: 6px;
+    position: relative;
+    font-size: medium;
+    background-color: crimson;
+    color: white;
+    border-color: crimson;
+    right: 15px;
+    float:right;
+    top: 15px;
+}
+
 .active {
     background-color: rgb(189, 189, 189);
 }
