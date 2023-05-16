@@ -76,6 +76,12 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   }
   const showAnswer = () => (id) => {
     setQid(id)
+    setPrioEmail('')
+    setActivePage('Answers')
+  }
+  const showPrioAnswer = (id, email) => () => {
+    setQid(id)
+    setPrioEmail(email)
     setActivePage('Answers')
   }
   const setSearch = (query) => () => {
@@ -84,6 +90,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
   }
   const [currentQid, setQid] = useState('q1')
   const [updateQid, setUpdateQid] = useState('')
+  const [prioEmail, setPrioEmail] = useState('')
 
   const loginGuest = () => {
     setEmail('')
@@ -125,7 +132,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
         <>
         {email && <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>}
         <br />
-        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email} setError={setError}/>
+        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email} setError={setError} prioEmail={prioEmail}/>
         </>
       )
     case 'PostAnswer': /* console.log('Switching to PostAnswer') */
@@ -142,7 +149,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'Profile': /* console.log('Switching to Profile') */
       return (
         <>
-        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setSearchQuery={setSearch}/>
+        <Profile email={email} setUpdateQid={setUpdateQid} setPage={showUpdateQuestion} setSearchQuery={setSearch} showPrioAnswer={showPrioAnswer}/>
         </>
       )
   }

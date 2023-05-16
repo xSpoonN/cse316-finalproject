@@ -9,7 +9,7 @@ function replaceLinks (text) {
   })
 }
 
-export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
+export default function Answers ({ qid, gotoPostAnswerPage, email, setError, prioEmail }) {
   const [questionData, setQuestionData] = useState(null)
   const [tagNames, setTagNames] = useState([])
   const [answers, setAnswers] = useState([])
@@ -29,9 +29,15 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
       }))
       setTagNames(tagNames)
       console.log(tagNames)
-      setAnswers((await modle.getAnswersByQID(qid)).sort((a, b) => {
-        return new Date(b.ans_date_time) - new Date(a.ans_date_time)
-      }))
+      const fetchedAnswers = await modle.getAnswersByQID(qid)
+      const sortedAnswers = fetchedAnswers.sort((a, b) => new Date(b.ans_date_time) - new Date(a.ans_date_time))
+      if (prioEmail !== '') {
+        const userAnswers = sortedAnswers.filter((answer) => answer.ans_by_email === prioEmail)
+        const otherAnswers = sortedAnswers.filter((answer) => answer.ans_by_email !== prioEmail)
+        setAnswers([...userAnswers, ...otherAnswers])
+      } else {
+        setAnswers(sortedAnswers)
+      }
       // modle.addViews(qid)
     }
     fetchData()
@@ -130,7 +136,8 @@ Answers.propTypes = {
   qid: PropTypes.string.isRequired,
   gotoPostAnswerPage: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  setError: PropTypes.func.isRequired
+  setError: PropTypes.func.isRequired,
+  prioEmail: PropTypes.string.isRequired
 }
 
 export function Answer ({ answer, email, setError }) {

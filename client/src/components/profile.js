@@ -98,7 +98,7 @@ UserQuestionList.propTypes = {
 }
 
 /* Question entry into the table */
-function AnsweredQuestion ({ question, setPage, setUpdateQid }) {
+function AnsweredQuestion ({ email, question, showPrioAnswer }) {
   const [answers, setAnswers] = useState([])
   useEffect(() => {
     const fetchAnswers = async () => {
@@ -111,10 +111,6 @@ function AnsweredQuestion ({ question, setPage, setUpdateQid }) {
     }
     fetchAnswers()
   }, [question._id])
-  const setAPage = (qid) => () => {
-    setUpdateQid(qid)
-    setPage()
-  }
   return (
     <>
       <tr className="pRow">
@@ -125,7 +121,7 @@ function AnsweredQuestion ({ question, setPage, setUpdateQid }) {
           {question.views} views
         </td>
         <td className="pTD pTitle">
-          <a className='plink' onClick={setAPage(question._id)}>
+          <a className='plink' onClick={showPrioAnswer(question._id, email)}>
             {question.title}
           </a>
         </td>
@@ -135,13 +131,13 @@ function AnsweredQuestion ({ question, setPage, setUpdateQid }) {
   )
 }
 AnsweredQuestion.propTypes = {
+  email: PropTypes.string.isRequired,
   question: PropTypes.object.isRequired,
-  setPage: PropTypes.func.isRequired,
-  setUpdateQid: PropTypes.func.isRequired
+  showPrioAnswer: PropTypes.func.isRequired
 }
 
 /* List of questions answered by the user */
-function AnsweredQuestionList ({ email, setPage, setUpdateQid }) {
+function AnsweredQuestionList ({ email, showPrioAnswer }) {
   const [questionList, setQuestionList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -175,7 +171,7 @@ function AnsweredQuestionList ({ email, setPage, setUpdateQid }) {
           <td className="pTD pDate"></td>
         </tr>
         {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
-          <AnsweredQuestion key={question._id} question={question} setPage={setPage} setUpdateQid={setUpdateQid}/>
+          <AnsweredQuestion key={question._id} email={email} question={question} showPrioAnswer={showPrioAnswer}/>
         ))}
       </tbody>
     </table>
@@ -186,11 +182,10 @@ function AnsweredQuestionList ({ email, setPage, setUpdateQid }) {
 }
 AnsweredQuestionList.propTypes = {
   email: PropTypes.string.isRequired,
-  setPage: PropTypes.func.isRequired,
-  setUpdateQid: PropTypes.func.isRequired
+  showPrioAnswer: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery }) {
+export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer }) {
   const [user, setUser] = useState(null)
   const [showTags, setShowTags] = useState(false)
   const [showAnswers, setShowAnswers] = useState(false)
@@ -227,7 +222,7 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery 
       <UserQuestionList email={user.email} setPage={setPage} setUpdateQid={setUpdateQid}/>
       <br/><br/>
       <p className="plink" onClick={toggleAnswers}><u>{showAnswers ? 'Hide' : 'Show'} Answered Questions</u></p>
-      {showAnswers && <AnsweredQuestionList email={user.email} setPage={setPage} setUpdateQid={setUpdateQid}/>}
+      {showAnswers && <AnsweredQuestionList email={user.email} showPrioAnswer={showPrioAnswer}/>}
       <br/>
       <p className="plink" onClick={toggleTags}><u>{showTags ? 'Hide' : 'Show'} Tags</u></p>
       {showTags && <AllTags setSearchQuery={setSearchQuery} email={user.email}/>}
@@ -238,5 +233,6 @@ Profile.propTypes = {
   email: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
   setUpdateQid: PropTypes.func.isRequired,
-  setSearchQuery: PropTypes.func.isRequired
+  setSearchQuery: PropTypes.func.isRequired,
+  showPrioAnswer: PropTypes.func.isRequired
 }
