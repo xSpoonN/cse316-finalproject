@@ -113,19 +113,19 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
         <>
           <p className="contentheader">All Questions</p>
           <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
-          <Questions key={ searchQuery } searchQuery={ searchQuery } fun={ showAnswer(currentQid)} email={email} />
+          <Questions key={ searchQuery } searchQuery={ searchQuery } fun={ showAnswer(currentQid)} email={email} setError={setError}/>
         </>
       )
     case 'PostQuestion': /* console.log('Switching to PostQuestion') */
       return (
-        <PostQuestion setActivePage={setActivePage} email={email} updateQid={updateQid} setUpdateQid={setUpdateQid}/>
+        <PostQuestion setActivePage={setActivePage} email={email} updateQid={updateQid} setUpdateQid={setUpdateQid} setError={setError}/>
       )
     case 'Answers': /* console.log('Switching to Answers') */
       return (
         <>
         <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
         <br />
-        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email}/>
+        <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email} setError={setError}/>
         </>
       )
     case 'PostAnswer': /* console.log('Switching to PostAnswer') */
@@ -168,11 +168,6 @@ export default function fakeStackOverflow () {
     setActivePage('Landing')
   }
 
-  const handleErrorTemp = () => {
-    if (!error) setError('ERROR!')
-    else setError('')
-  }
-
   return (
     <div>
       {<Header
@@ -190,7 +185,6 @@ export default function fakeStackOverflow () {
           email={email}
           logout={logout}
         />}
-      <button className="content" onClick={handleErrorTemp}>error!</button>
       <div className="content">
         <Page
           searchQuery={searchQuery}

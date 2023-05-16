@@ -9,7 +9,7 @@ function replaceLinks (text) {
   })
 }
 
-export default function Answers ({ qid, gotoPostAnswerPage, email }) {
+export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
   const [questionData, setQuestionData] = useState(null)
   const [tagNames, setTagNames] = useState([])
   const [answers, setAnswers] = useState([])
@@ -54,6 +54,10 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
 
   const handleUpvote = async () => {
     const resp = await modle.addRep('question', qid, 1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setVoteStatus(1)
     setQuestionData((data) => ({
       ...data,
@@ -65,6 +69,10 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
 
   const handleDownvote = async () => {
     const resp = await modle.addRep('question', qid, -1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setVoteStatus(-1)
     setQuestionData((data) => ({
       ...data,
@@ -106,7 +114,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
             <td className="aTD aCred"></td>
           </tr>
           {answers.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((answer) => (
-            <Answer key={answer._id} answer={answer} email={email}/>
+            <Answer key={answer._id} answer={answer} email={email} setError={setError}/>
           ))}
         </tbody>
       </table>
@@ -124,10 +132,11 @@ export default function Answers ({ qid, gotoPostAnswerPage, email }) {
 Answers.propTypes = {
   qid: PropTypes.string.isRequired,
   gotoPostAnswerPage: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setError: PropTypes.func.isRequired
 }
 
-export function Answer ({ answer, email }) {
+export function Answer ({ answer, email, setError }) {
   const [comments, setComments] = useState([])
   const [commentData, setCommentData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -196,6 +205,10 @@ export function Answer ({ answer, email }) {
 
   const handleUpvote = async () => {
     const resp = await modle.addRep('answer', answer._id, 1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setVoteStatus(1)
     setAnswerData((data) => ({
       ...data,
@@ -208,6 +221,10 @@ export function Answer ({ answer, email }) {
 
   const handleDownvote = async () => {
     const resp = await modle.addRep('answer', answer._id, -1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setVoteStatus(-1)
     setAnswerData((data) => ({
       ...data,
@@ -266,7 +283,8 @@ export function Answer ({ answer, email }) {
 }
 Answer.propTypes = {
   answer: PropTypes.object.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setError: PropTypes.func.isRequired
 }
 
 export function Comment ({ comment, email }) {
