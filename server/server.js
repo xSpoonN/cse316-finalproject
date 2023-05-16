@@ -110,19 +110,16 @@ app.post('/deletequestion/:qid', async (req, res) => {
 
     // Delete associated answers
     const answerIds = deletedQuestion.answers;
-    await Answers.deleteMany({ _id: { $in: answerIds } });
-
-    // Delete associated comments
     const commentIds = await Answers.distinct('comments', { _id: { $in: answerIds } });
     await Comments.deleteMany({ _id: { $in: commentIds } });
+    await Answers.deleteMany({ _id: { $in: answerIds } });
 
     res.json({ message: 'Question deleted' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-});
-
+})
 
 /* Add view to Question */
 app.post('/questions/:qid/views', async (req, res) => {
