@@ -19,13 +19,18 @@
   padding: 15px;
 }
 
+.pScore {
+  width: 7%;
+  overflow-wrap: break-word;
+}
+
 .pInfo {
   width: 10%;
   overflow-wrap: break-word;
 }
 
 .pTitle {
-  width: 60%;
+  width: 55%;
   overflow-wrap: break-word;
 }
 

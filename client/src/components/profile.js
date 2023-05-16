@@ -4,20 +4,42 @@ import '../stylesheets/profile.css'
 const modle = require('../models/axiosmodel.js')
 
 function UserQuestion ({ question, setPage, setUpdateQid }) {
+  const [answers, setAnswers] = useState([])
+  useEffect(() => {
+    const fetchAnswers = async () => {
+      try {
+        const fetchedAnswers = await modle.getAnswersByQID(question._id)
+        setAnswers(fetchedAnswers)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchAnswers()
+  }, [question._id])
   const setAPage = (qid) => () => {
     setUpdateQid(qid)
     setPage()
   }
   return (
     <>
-    <tr className="pRow">
-      <td className="pTD pInfo">DO THIS toLocaleDateString</td>
-      <td className="pTD pTitle"><a className='plink' onClick={setAPage(question._id)}>{question.title}</a></td>
-      <td className="pTD pDate">{modle.formatDate(new Date(question.ask_date_time))}</td>
-    </tr>
+      <tr className="pRow">
+        <td className="pTD pScore">{question.rep} votes</td>
+        <td className="pTD pInfo">
+          {answers.length} answers
+          <br />
+          {question.views} views
+        </td>
+        <td className="pTD pTitle">
+          <a className='plink' onClick={setAPage(question._id)}>
+            {question.title}
+          </a>
+        </td>
+        <td className="pTD pDate">{modle.formatDate(new Date(question.ask_date_time))}</td>
+      </tr>
     </>
   )
 }
+
 UserQuestion.propTypes = {
   question: PropTypes.object.isRequired,
   setPage: PropTypes.func.isRequired,
@@ -52,6 +74,7 @@ function UserQuestionList ({ email, setPage, setUpdateQid }) {
     <table id="pTable">
       <tbody>
         <tr className="pRow">
+          <td className="pTD pScore"></td>
           <td className="pTD pInfo"></td>
           <td className="pTD pTitle"><b>Your Questions</b></td>
           <td className="pTD pDate"></td>
