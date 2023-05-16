@@ -4,7 +4,7 @@ import '../stylesheets/questions.css'
 import '../stylesheets/fakeStackOverflow.css'
 const modle = require('../models/axiosmodel.js')
 
-export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep, email, upvoters, downvoters }) {
+export function Question ({ qid, answers, views, title, tagList, askedBy, date, unans, setActivePage, rep, email, upvoters, downvoters, setError }) {
   const [tagNames, setTagNames] = useState([])
   const [reputation, setReputation] = useState(rep)
   const [voteStatus, setVoteStatus] = useState(0)
@@ -37,6 +37,10 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
 
   const handleUpvote = async () => {
     const resp = await modle.addRep('question', qid, 1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp?.updated.upvoters.includes(user._id)) setVoteStatus(1)
@@ -45,6 +49,10 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
 
   const handleDownvote = async () => {
     const resp = await modle.addRep('question', qid, -1, email)
+    if (resp?.err) {
+      setError(resp.err)
+      setTimeout(() => setError(''), 3000)
+    }
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp?.updated.downvoters.includes(user._id)) setVoteStatus(-1)
@@ -89,10 +97,11 @@ Question.propTypes = {
   rep: PropTypes.number.isRequired,
   email: PropTypes.string.isRequired,
   upvoters: PropTypes.array.isRequired,
-  downvoters: PropTypes.array.isRequired
+  downvoters: PropTypes.array.isRequired,
+  setError: PropTypes.func.isRequired
 }
 
-export default function Questions ({ searchQuery, fun, email }) {
+export default function Questions ({ searchQuery, fun, email, setError }) {
   const [sortOrder, setSortOrder] = useState('Newest')
   const [questionList, setQuestionList] = useState([])
   const [qCount, setQCount] = useState(0)
@@ -170,6 +179,7 @@ export default function Questions ({ searchQuery, fun, email }) {
             email={email}
             upvoters={upvoters}
             downvoters={downvoters}
+            setError={setError}
           />
         )
       })
@@ -232,5 +242,6 @@ export default function Questions ({ searchQuery, fun, email }) {
 Questions.propTypes = {
   searchQuery: PropTypes.string,
   fun: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setError: PropTypes.func.isRequired
 }
