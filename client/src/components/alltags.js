@@ -47,13 +47,22 @@ export function Tag ({ tag, index, questionCount, setSearchQuery, email, setErro
     return tags.every(t => t.name !== tagbox /* || t._id === tag._id */)
   }
 
-  function rename () {
-    if (modifyable() && available()) {
-      modle.renameTag(tag._id, tagbox)
-      setTagName(tagbox)
-    } else {
-      setError('You cannot rename this tag', 3000)
+  async function rename () {
+    const regex = /^((?<=[\w+?#.])-?(?=[\w+?#.])|[\w+?#.]){1,10}$/
+    if (!tagbox.match(regex)) {
+      setError({ msg: 'New tag name is invalid', duration: 3000 })
+      return
     }
+    if (!(await modifyable())) {
+      setError({ msg: 'This tag is in use by other users', duration: 3000 })
+      return
+    }
+    if (!(await available())) {
+      setError({ msg: 'New tag name already exists', duration: 3000 })
+      return
+    }
+    modle.renameTag(tag._id, tagbox)
+    setTagName(tagbox)
   }
 
   return (
