@@ -312,6 +312,27 @@ app.post('/renameTag/:tagId', async (req, res) => {
   }
 })
 
+/* Remove a Tag */
+app.post('/removeTag/:tagId', async (req, res) => {
+  console.log('Tag DELETE request received')
+  try {
+    const deletedTag = await Tags.findByIdAndRemove(req.params.tagId)
+    if (!deletedTag) {
+      return res.status(404).json({ message: 'Tag not found' })
+    }
+    // Remove the tag from the questions
+    await Questions.updateMany(
+      { tags: req.params.tagId },
+      { $pull: { tags: req.params.tagId } }
+    )
+    res.json({ message: 'Tag deleted' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
+
 /* Login User */
 app.post('/userLogin', async (req, res) => {
   console.log('User GET login request received')
