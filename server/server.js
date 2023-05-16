@@ -471,7 +471,7 @@ app.post('/rep', async (req, res) => {
       console.log(updated)
       user = await Users.findOne({email: updated[req.body.type == 'answer' ? 'ans_by_email' : 'asked_by_email']})
       console.log(user)
-      if (user.reputation < 50) return res.status(400).json({ updated: updated, err: 'You do not have enough reputation' })
+      if (user.reputation < 50 && !user.isadmin) return res.status(400).json({ updated: updated, err: 'You do not have enough reputation' })
       if (rep > 0 && updated.upvoters.includes(reqUser._id)) { /* If user has already upvoted, remove that vote */
         updated.upvoters.splice(updated.upvoters.indexOf(reqUser._id), 1)
         updated[req.body.type == 'answer' ? 'reputation' : 'rep'] -= 1
