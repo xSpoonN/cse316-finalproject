@@ -14,7 +14,7 @@ body { /* Applies this font globally */
     vertical-align: middle;
     height: 80px;
     position: fixed;
-    z-index: 5;
+    z-index: 9999;
     font-family: "Comic Sans MS";
     text-shadow: -2px -2px #e01d1d, -4px -4px #e0721d,
         -6px -6px #e0c31d, -8px -8px #58e01d,
@@ -65,12 +65,18 @@ body { /* Applies this font globally */
 }
 
 .error {
+    position:fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5000;
     color:white;
     font-weight:bold;
-    padding-top:80px;
     background-color: crimson;
     text-align: center;
     border-radius: 10px;
+    padding: 4px;
+    padding-top: 84px;
 }
 
 .content { /* content class is applied to render elements that are not the header or sidebar */
