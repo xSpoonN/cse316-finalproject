@@ -39,6 +39,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
 
   useEffect(() => {
     async function fetchVoteStatus () {
+      if (!email) return
       const user = await modle.getUser(email)
       if (user) {
         if (questionData?.upvoters?.includes(user._id)) setVoteStatus(1)
@@ -53,11 +54,9 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
   function handlePrevPage () { setCurrentPage(p => p - 1) }
 
   const handleUpvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('question', qid, 1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setVoteStatus(1)
     setQuestionData((data) => ({
       ...data,
@@ -68,11 +67,9 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
   }
 
   const handleDownvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('question', qid, -1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setVoteStatus(-1)
     setQuestionData((data) => ({
       ...data,
@@ -125,7 +122,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError }) {
       </div>
       <br />
       {answers.length === 0 && (<p id="ap_noanswers"><i>No Answers Yet...</i></p>)}
-      <button id="ap_answerbutton" onClick={gotoPostAnswerPage}>Answer Question</button>
+      {email && <button id="ap_answerbutton" onClick={gotoPostAnswerPage}>Answer Question</button>}
     </>
   )
 }
@@ -177,6 +174,7 @@ export function Answer ({ answer, email, setError }) {
 
   useEffect(() => {
     async function fetchVoteStatus () {
+      if (!email) return
       const user = await modle.getUser(email)
       if (user) {
         if (answerData?.upvoters?.includes(user._id)) setVoteStatus(1)
@@ -204,11 +202,9 @@ export function Answer ({ answer, email, setError }) {
   }
 
   const handleUpvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('answer', answer._id, 1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setVoteStatus(1)
     setAnswerData((data) => ({
       ...data,
@@ -220,11 +216,9 @@ export function Answer ({ answer, email, setError }) {
   }
 
   const handleDownvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('answer', answer._id, -1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setVoteStatus(-1)
     setAnswerData((data) => ({
       ...data,
@@ -255,7 +249,7 @@ export function Answer ({ answer, email, setError }) {
       </tr>
       {
         commentData.slice((currentPage - 1) * 3, (currentPage - 1) * 3 + 3).map((comment) => (
-          <Comment key={comment._id} comment={comment} email={email}/>
+          <Comment key={comment._id} comment={comment} email={email} setError={setError}/>
         ))
       }
       {(comments.length > 0)
@@ -287,12 +281,13 @@ Answer.propTypes = {
   setError: PropTypes.func.isRequired
 }
 
-export function Comment ({ comment, email }) {
+export function Comment ({ comment, email, setError }) {
   const [voteStatus, setVoteStatus] = useState(0)
   const [commentData, setCommentData] = useState(comment)
 
   useEffect(() => {
     async function fetchVoteStatus () {
+      if (!email) return
       const user = await modle.getUser(email)
       if (user) {
         if (commentData?.voters?.includes(user._id)) setVoteStatus(1)
@@ -303,6 +298,7 @@ export function Comment ({ comment, email }) {
   }, [email, commentData])
 
   const handleUpvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('comment', comment._id, 1, email)
     /* console.log(resp) */
     setVoteStatus(1)
@@ -332,5 +328,6 @@ export function Comment ({ comment, email }) {
 }
 Comment.propTypes = {
   comment: PropTypes.object.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  setError: PropTypes.func.isRequired
 }

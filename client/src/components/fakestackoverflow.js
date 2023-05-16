@@ -113,7 +113,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
       return (
         <>
           <p className="contentheader">All Questions</p>
-          <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
+          {email && <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>}
           <Questions key={ searchQuery } searchQuery={ searchQuery } fun={ showAnswer(currentQid)} email={email} setError={setError}/>
         </>
       )
@@ -124,7 +124,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'Answers': /* console.log('Switching to Answers') */
       return (
         <>
-        <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
+        {email && <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>}
         <br />
         <Answers qid={currentQid} gotoPostAnswerPage={switchToPage('PostAnswer')} email={email} setError={setError}/>
         </>
@@ -136,7 +136,7 @@ export function Page ({ searchQuery, activePage, setActivePage, setSearchQuery, 
     case 'AllTags': /* console.log('Switching to AllTags') */
       return (
         <>
-        <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>
+        {email && <button className="askqbutt" onClick={switchToPage('PostQuestion')}>Ask Question</button>}
         <AllTags setSearchQuery={setSearch} qidfilter={tagFilter} />
         </>
       )
@@ -162,7 +162,8 @@ export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Landing')
   const [email, setEmail] = useState(undefined)
-  const [error, setError] = useState('')
+  const [error, setError] = useState({ msg: '', duration: 0 })
+  const [timeoutFunc, setTimeoutFunc] = useState(undefined)
 
   const logout = () => {
     setEmail(undefined)
@@ -170,11 +171,14 @@ export default function fakeStackOverflow () {
   }
 
   useEffect(() => {
-    if (error) {
-      /* const timer =  */setTimeout(() => {
-        setError('')
-      }, 3000) // Change the delay as needed for the desired animation duration
-      /* return () => clearTimeout(timer) */
+    if (error.msg) {
+      console.log('error msg changed', timeoutFunc)
+      if (timeoutFunc) clearTimeout(timeoutFunc)
+      const timeFunc = setTimeout(() => {
+        setError({ msg: '', duration: 0 })
+      }, error.duration)
+      setTimeoutFunc(timeFunc)
+      console.log('new timeoutfunc - ', timeFunc)
     }
   }, [error])
 
@@ -186,8 +190,8 @@ export default function fakeStackOverflow () {
         className="header"
       />}
       {(
-        <div className={`error ${error ? 'fade-in' : 'fade-out'}`}>
-          {error}
+        <div className={`error ${error.msg ? 'fade-in' : 'fade-out'}`}>
+          {error.msg}
         </div>
       )}
       {email !== undefined &&

@@ -14,7 +14,7 @@ export function validateLinks (text) {
   return null
 }
 
-export default function QuestionForm ({ setActivePage, email, updateQid, setUpdateQid }) {
+export default function QuestionForm ({ setActivePage, email, updateQid, setUpdateQid, setError }) {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const [tags, setTags] = useState('')
@@ -65,6 +65,7 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
         }
         setActivePage('Questions')
       } catch (err) {
+        setError({ msg: 'You must have at least 50 reputation to create a new tag!', duration: 3000 })
         console.log(err)
       }
     }
@@ -139,5 +140,6 @@ QuestionForm.propTypes = {
   setActivePage: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
   updateQid: PropTypes.string.isRequired,
-  setUpdateQid: PropTypes.func.isRequired
+  setUpdateQid: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired
 }

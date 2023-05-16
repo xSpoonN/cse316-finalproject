@@ -26,6 +26,7 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
 
   useEffect(() => {
     async function fetchVoteStatus () {
+      if (!email) return
       const user = await modle.getUser(email)
       if (user) {
         if (upvoters?.includes(user._id)) setVoteStatus(1)
@@ -36,11 +37,9 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
   }, [])
 
   const handleUpvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('question', qid, 1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp?.updated.upvoters.includes(user._id)) setVoteStatus(1)
@@ -48,11 +47,9 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
   }
 
   const handleDownvote = async () => {
+    if (!email) return setError({ msg: 'You must be logged in to vote!', duration: 3000 })
     const resp = await modle.addRep('question', qid, -1, email)
-    if (resp?.err) {
-      setError(resp.err)
-      setTimeout(() => setError(''), 3000)
-    }
+    if (resp?.err) setError({ msg: resp.err, duration: 3000 })
     setReputation(resp.updated.rep)
     const user = await modle.getUser(email)
     if (resp?.updated.downvoters.includes(user._id)) setVoteStatus(-1)
