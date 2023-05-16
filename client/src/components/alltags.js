@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
-export default function AllTags ({ setSearchQuery }) {
+export default function AllTags ({ setSearchQuery, qidfilter }) {
   const [tags, setTags] = useState([])
 
   useEffect(() => {
     async function updateTags () {
-      const tagList = await modle.getAllTags()
+      const tagList = qidfilter === '' ? await modle.getAllTags() : await modle.getTagsBy(qidfilter)
       setTags(await Promise.all(
         tagList.map(async (tag, index) => {
           const questionCount = await modle.getQuestionCountByTagId(tag._id)
@@ -28,7 +28,8 @@ export default function AllTags ({ setSearchQuery }) {
   )
 }
 AllTags.propTypes = {
-  setSearchQuery: PropTypes.func.isRequired
+  setSearchQuery: PropTypes.func.isRequired,
+  qidfilter: PropTypes.string.isRequired
 }
 
 export function Tag ({ tag, index, questionCount, setSearchQuery }) {

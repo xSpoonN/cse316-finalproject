@@ -223,6 +223,19 @@ app.get('/tags/:tagId', async (req, res) => {
   }
 })
 
+/* Get tag by QID */
+app.get('/tagsby/:qid', async (req, res) => {
+  console.log('Tag/:qid GET request received')
+  try {
+    const question = await Questions.findById(req.params.qid)
+    const tags = await Tags.find({_id: {$in: question.tags}})
+    res.json(tags)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: err.message })
+  }
+})
+
 /* Get Tag by Name*/
 app.get('/tagNames/:tagName', async (req, res) => {
   console.log('Tag/:tagName GET request received')

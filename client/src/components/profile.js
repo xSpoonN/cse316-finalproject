@@ -95,7 +95,7 @@ UserQuestionList.propTypes = {
   setUpdateQid: PropTypes.func.isRequired
 }
 
-export default function Profile ({ email, setPage, setUpdateQid }) {
+export default function Profile ({ email, setPage, setUpdateQid, setTagFilter }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -126,5 +126,6 @@ export default function Profile ({ email, setPage, setUpdateQid }) {
 Profile.propTypes = {
   email: PropTypes.string.isRequired,
   setPage: PropTypes.func.isRequired,
-  setUpdateQid: PropTypes.func.isRequired
+  setUpdateQid: PropTypes.func.isRequired,
+  setTagFilter: PropTypes.func.isRequired
 }
