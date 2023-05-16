@@ -47,20 +47,26 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
     if (checkQuestionForm()) {
       const tagsList = tags.split(' ')
       const user = await modle.getUser(email)
-      const tagIds = await Promise.all(tagsList.map(async (tag) => {
-        const tagExists = await modle.tagExists(tag.toLowerCase())
-        console.log(tagExists)
-        return (tagExists.length) ? tagExists[0]._id : modle.addTag(tag.toLowerCase(), user._id)
-        // Todo: Check Reputation of the creating user.
-      }))
-
-      if (updateQid === '') {
-        await modle.addQuestion(title, text, tagIds, user.username, email)
-      } else {
-        await modle.editQuestion(updateQid, title, text, tagIds)
-        setUpdateQid('')
+      try {
+        const tagIds = await Promise.all(tagsList.map(async (tag) => {
+          const tagExists = await modle.tagExists(tag.toLowerCase())
+          console.log(tagExists)
+          if (tagExists.length) return tagExists[0]._id
+          else if (user.reputation < 50) {
+            // setError('You must have at least 50 reputation to create a new tag!')
+            throw new Error('You must have at least 50 reputation to create a new tag!')
+          } else return modle.addTag(tag.toLowerCase(), user._id)
+        }))
+        if (updateQid === '') {
+          await modle.addQuestion(title, text, tagIds, user.username, email)
+        } else {
+          await modle.editQuestion(updateQid, title, text, tagIds)
+          setUpdateQid('')
+        }
+        setActivePage('Questions')
+      } catch (err) {
+        console.log(err)
       }
-      setActivePage('Questions')
     }
   }
 

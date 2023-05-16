@@ -346,6 +346,8 @@ app.get('/comment/:cid', async (req, res) => {
 app.post('/comments', async (req, res) => {
   console.log('Comment POST request received')
   console.log(req.body)
+  const user = await Users.findOne({email: req.body.user})
+  if (!user || user?.reputation < 50) return res.status(400).json({ ...req.body, err: 'User rep too low' })
   const comment = new Comments({
     text: req.body.text,
     ans_id: req.body.aid,
@@ -375,7 +377,10 @@ app.post('/rep', async (req, res) => {
     const reqUser = await Users.findOne({email: req.body.email})
     if (req.body.type == 'answer' || req.body.type == 'question') {
       updated = await (req.body.type == 'answer' ? Answers : Questions).findOne({_id: req.body.id})
+      console.log(updated)
       user = await Users.findOne({email: updated[req.body.type == 'answer' ? 'ans_by_email' : 'asked_by_email']})
+      console.log(user)
+      if (user.reputation < 50) return res.status(400).json({ updated: updated, err: 'User does not have enough reputation' })
       if (rep > 0 && updated.upvoters.includes(reqUser._id)) { /* If user has already upvoted, remove that vote */
         updated.upvoters.splice(updated.upvoters.indexOf(reqUser._id), 1)
         updated[req.body.type == 'answer' ? 'reputation' : 'rep'] -= 1; user.reputation -= 5

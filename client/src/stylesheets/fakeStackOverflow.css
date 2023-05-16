@@ -64,6 +64,15 @@ body { /* Applies this font globally */
     cursor:progress;
 }
 
+.error {
+    color:white;
+    font-weight:bold;
+    padding-top:80px;
+    background-color: crimson;
+    text-align: center;
+    border-radius: 10px;
+}
+
 .content { /* content class is applied to render elements that are not the header or sidebar */
     margin-left: max(20%, 150px);
     padding-top: 90px;
