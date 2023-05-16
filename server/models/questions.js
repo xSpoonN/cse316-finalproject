@@ -1,5 +1,4 @@
 // Question Document Schema
-// Question Document Schema
 const mongoose = require('mongoose')
 // eslint-disable-next-line no-unused-vars
 const Tag = require('./tags')

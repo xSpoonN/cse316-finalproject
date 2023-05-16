@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
@@ -18,6 +18,20 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const [tags, setTags] = useState('')
+
+  useEffect(() => {
+    if (updateQid !== '') {
+      modle.getQuestion(updateQid).then(async (question) => {
+        setTitle(question.title)
+        setText(question.text)
+        const tagnames = await Promise.all(question.tags.map(async (tag) => {
+          const name = await modle.getTagName(tag)
+          return name
+        }))
+        setTags(tagnames.join(' '))
+      })
+    }
+  }, [])
 
   const [titleError, setTitleError] = useState('')
   const [textError, setTextError] = useState('')
@@ -43,7 +57,7 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
       if (updateQid === '') {
         await modle.addQuestion(title, text, tagIds, user.username, email)
       } else {
-        // Do stuff here
+        await modle.editQuestion(updateQid, title, text, tagIds)
         setUpdateQid('')
       }
       setActivePage('Questions')
@@ -82,10 +96,15 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
     return !errFound
   }
 
+  async function deleteQuestion () {
+    await modle.deleteQuestion(updateQid)
+    setActivePage('Profile')
+  }
+
   return (
+    <>
     <form onSubmit={handleSubmit}>
       <div id="askquestion">
-        {updateQid !== '' && <h1>{updateQid}</h1>}
         <h2>Question Title*</h2>
         <p style={{ fontStyle: 'italic' }}>Limit title to 100 characters or less</p>
         <input type="text" name="questiontitle" value={title} onChange={handleTitleChange} maxLength={100} required />
@@ -102,10 +121,12 @@ export default function QuestionForm ({ setActivePage, email, updateQid, setUpda
         <p className="errormsg" id="qtagserror">{tagsError}</p>
         <br /><br /><br /><br /><br />
 
-        <input type="submit" id="postqbutt" value="Post Question" />
+        <input type="submit" id="postqbutt" value={updateQid !== '' ? 'Update Question' : 'Post Question'} />
         <p style={{ textAlign: 'right' }}>* indicates mandatory fields</p>
       </div>
     </form>
+    {updateQid !== '' && <button onClick={deleteQuestion}>Delete Question</button>}
+    </>
   )
 }
 QuestionForm.propTypes = {

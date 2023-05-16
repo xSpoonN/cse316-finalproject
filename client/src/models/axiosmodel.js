@@ -245,6 +245,28 @@ export function addQuestion (title, text, tags, user, email) {
   })
 }
 
+export function deleteQuestion (qid) {
+  return axios.post(`http://localhost:8000/deletequestion/${qid}`).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
+export function editQuestion (qid, title, text, tags) {
+  return axios.post(`http://localhost:8000/editquestion/${qid}`, {
+    title,
+    text,
+    tags
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 /**
  * Gets the number of questions for a tag
  * @param {string} tagId
