@@ -23,7 +23,7 @@ export default function LoginPage ({ login }) {
         setError(resp.data.message)
       }
     } catch (error) {
-      console.log(error)
+      console.log(error?.response)
       if (error.response && error.response.status === 401) {
         // Unauthorized login error occurred
         setError('Invalid email or password')
