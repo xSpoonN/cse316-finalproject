@@ -196,9 +196,11 @@ export function Answer ({ answer, email, setError }) {
   function handlePrevPage () { setCurrentPage(p => p - 1) }
 
   const handleAddComment = async () => {
+    if (!newComment) return setError({ msg: 'Comment cannot be empty!', duration: 3000 })
     try {
       console.log(email)
-      await modle.addComment(answer._id, newComment, email)
+      const resp = await modle.addComment(answer._id, newComment, email)
+      if (resp?.err) setError({ msg: resp.err, duration: 3000 })
       const fetchedComments = await modle.getCommentsByAID(answer._id)
       setComments(fetchedComments)
       setNewComment('')
