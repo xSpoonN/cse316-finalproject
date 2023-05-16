@@ -50,6 +50,11 @@ export async function getAllTags () {
   return resp.data
 }
 
+export async function getTagsBy (qid) {
+  const resp = await axios.get(`http://localhost:8000/tagsby/${qid}`)
+  return resp.data
+}
+
 /**
  * Gets all tags
  * @returns {Promise<Array>} Returns an array of all tag names
