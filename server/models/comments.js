@@ -14,6 +14,14 @@ const CommentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  voters: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  rep: {
+    type: Number,
+    default: 0
+  },
   url: String
 })
 module.exports = mongoose.model('Comment', CommentSchema)

@@ -203,7 +203,7 @@ export function Answer ({ answer, email }) {
       upvoters: resp.updated.upvoters,
       downvoters: resp.updated.downvoters
     }))
-    console.log(resp.updated.reputation)
+    /* console.log(resp.updated.reputation) */
   }
 
   const handleDownvote = async () => {
@@ -215,7 +215,7 @@ export function Answer ({ answer, email }) {
       upvoters: resp.updated.upvoters,
       downvoters: resp.updated.downvoters
     }))
-    console.log(resp.updated.reputation)
+    /* console.log(resp.updated.reputation) */
   }
 
   const textWithLinks = replaceLinks(answer.text)
@@ -271,23 +271,28 @@ Answer.propTypes = {
 
 export function Comment ({ comment, email }) {
   const [voteStatus, setVoteStatus] = useState(0)
+  const [commentData, setCommentData] = useState(comment)
 
   useEffect(() => {
     async function fetchVoteStatus () {
       const user = await modle.getUser(email)
       if (user) {
-        if (comment?.upvoters?.includes(user._id)) setVoteStatus(1)
-        else if (comment?.downvoters?.includes(user._id)) setVoteStatus(-1)
+        if (commentData?.voters?.includes(user._id)) setVoteStatus(1)
         else setVoteStatus(0)
       }
     }
     fetchVoteStatus()
-  }, [email, comment])
+  }, [email, commentData])
 
   const handleUpvote = async () => {
     const resp = await modle.addRep('comment', comment._id, 1, email)
+    /* console.log(resp) */
     setVoteStatus(1)
-    console.log(resp.updated.reputation)
+    setCommentData((data) => ({
+      ...data,
+      rep: resp.updated.rep,
+      voters: resp.updated.voters
+    }))
   }
 
   return (
@@ -295,7 +300,7 @@ export function Comment ({ comment, email }) {
       <td className="acV">
         <button className={voteStatus === 1 ? 'avote upvoted' : 'avote'} onClick={handleUpvote}>▲</button>
         <br/>
-        0
+        {commentData.rep}
         <br/>
       </td>
       <td className="aComment aComSize" dangerouslySetInnerHTML={{ __html: comment.text }} />
