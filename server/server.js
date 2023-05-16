@@ -359,6 +359,9 @@ app.post('/rep', async (req, res) => {
       if (updated.voters.includes(reqUser._id)) {
         updated.voters.splice(updated.voters.indexOf(reqUser._id), 1)
         updated.rep -= rep;
+      } else {
+        updated.voters.push(reqUser._id)
+        updated.rep += rep;
       }
     } else {
       console.log('Invalid type')
