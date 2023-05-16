@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 const modle = require('../models/axiosmodel.js')
 
@@ -14,10 +14,24 @@ export function validateLinks (text) {
   return null
 }
 
-export default function QuestionForm ({ setActivePage, email }) {
+export default function QuestionForm ({ setActivePage, email, updateQid, setUpdateQid }) {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const [tags, setTags] = useState('')
+
+  useEffect(() => {
+    if (updateQid !== '') {
+      modle.getQuestion(updateQid).then(async (question) => {
+        setTitle(question.title)
+        setText(question.text)
+        const tagnames = await Promise.all(question.tags.map(async (tag) => {
+          const name = await modle.getTagName(tag)
+          return name
+        }))
+        setTags(tagnames.join(' '))
+      })
+    }
+  }, [])
 
   const [titleError, setTitleError] = useState('')
   const [textError, setTextError] = useState('')
@@ -43,7 +57,12 @@ export default function QuestionForm ({ setActivePage, email }) {
             throw new Error('You must have at least 50 reputation to create a new tag!')
           } else return modle.addTag(tag.toLowerCase(), user._id)
         }))
-        await modle.addQuestion(title, text, tagIds, user.username, email)
+        if (updateQid === '') {
+          await modle.addQuestion(title, text, tagIds, user.username, email)
+        } else {
+          await modle.editQuestion(updateQid, title, text, tagIds)
+          setUpdateQid('')
+        }
         setActivePage('Questions')
       } catch (err) {
         console.log(err)
@@ -83,7 +102,13 @@ export default function QuestionForm ({ setActivePage, email }) {
     return !errFound
   }
 
+  async function deleteQuestion () {
+    await modle.deleteQuestion(updateQid)
+    setActivePage('Profile')
+  }
+
   return (
+    <>
     <form onSubmit={handleSubmit}>
       <div id="askquestion">
         <h2>Question Title*</h2>
@@ -102,13 +127,17 @@ export default function QuestionForm ({ setActivePage, email }) {
         <p className="errormsg" id="qtagserror">{tagsError}</p>
         <br /><br /><br /><br /><br />
 
-        <input type="submit" id="postqbutt" value="Post Question" />
+        <input type="submit" id="postqbutt" value={updateQid !== '' ? 'Update Question' : 'Post Question'} />
         <p style={{ textAlign: 'right' }}>* indicates mandatory fields</p>
       </div>
     </form>
+    {updateQid !== '' && <button onClick={deleteQuestion}>Delete Question</button>}
+    </>
   )
 }
 QuestionForm.propTypes = {
   setActivePage: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
+  updateQid: PropTypes.string.isRequired,
+  setUpdateQid: PropTypes.func.isRequired
 }

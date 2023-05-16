@@ -80,6 +80,50 @@ app.post('/questions', async (req, res) => {
   }
 })
 
+/* Edit a question */
+app.post('/editquestion/:qid', async (req, res) => {
+  console.log('Question PUT request received')
+  try {
+    const question = await Questions.findById(req.params.qid)
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' })
+    }
+    question.title = req.body.title
+    question.text = req.body.text
+    question.tags = req.body.tags
+    const updatedQuestion = await question.save()
+    res.json(updatedQuestion)
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({ message: err.message })
+  }
+})
+
+/* Delete a question */
+app.post('/deletequestion/:qid', async (req, res) => {
+  console.log('Question DELETE request received');
+  try {
+    const deletedQuestion = await Questions.findByIdAndRemove(req.params.qid);
+    if (!deletedQuestion) {
+      return res.status(404).json({ message: 'Question not found' });
+    }
+
+    // Delete associated answers
+    const answerIds = deletedQuestion.answers;
+    await Answers.deleteMany({ _id: { $in: answerIds } });
+
+    // Delete associated comments
+    const commentIds = await Answers.distinct('comments', { _id: { $in: answerIds } });
+    await Comments.deleteMany({ _id: { $in: commentIds } });
+
+    res.json({ message: 'Question deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 /* Add view to Question */
 app.post('/questions/:qid/views', async (req, res) => {
   console.log('Answer VIEW POST request received')
