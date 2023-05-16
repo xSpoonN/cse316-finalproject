@@ -10,4 +10,11 @@
 
 .landingbutt {
   text-align: center;
+  padding: 4px;
+  display: inline-block;
+  font-size: medium;
+  background-color: cornflowerblue;
+  color: white;
+  border-radius:5px;
+  border-color: cornflowerblue;
 }

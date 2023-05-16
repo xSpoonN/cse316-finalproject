@@ -66,18 +66,18 @@ export function Question ({ qid, answers, views, title, tagList, askedBy, date, 
         <br/>
         <button className={voteStatus === -1 ? 'qvote downvoted' : 'qvote'} onClick={handleDownvote}>▼</button>
       </td>
-      <td className="qTD">
+      <td className="qTD qANSVIEWS">
         {answers} answers <br />
         {views} views
       </td>
 
-      <td className="qTD">
+      <td className="qTD qTITLE">
         <a className="qlink" onClick={ setPage(qid) }>{title}</a>
         <br/>
         {tagNames.map((name, i) => (<button key={tagList[i]} className="qtag">{name}</button>))}
       </td>
 
-      <td className="qTD"><b>{askedBy}</b> {`asked ${modle.formatDate(date)}`}</td>
+      <td className="qTD qAUTHOR"><b>{askedBy}</b> {`asked ${modle.formatDate(date)}`}</td>
     </tr>
   )
 }
@@ -181,7 +181,7 @@ export default function Questions ({ searchQuery, fun, email, setError }) {
           />
         )
       })
-      qL.unshift(<tr className="qRow" key="RowFiller"></tr>) /* Adds a blank row at the top to get the top border */
+      /* qL.unshift(<tr className="qRow" key="RowFiller"></tr>) */ /* Adds a blank row at the top to get the top border */
       setQCount(qL.filter(q => q).length)
       const startIndex = (currentPage - 1) * ((isFirstPage) ? 6 : 5)
       const pageQuestions = qL.slice(startIndex, startIndex + ((isFirstPage) ? 6 : 5))
@@ -227,6 +227,7 @@ export default function Questions ({ searchQuery, fun, email, setError }) {
       <button id="activebutt" className="questionsort" onClick={() => setSortOrder('Active')}>Active</button>
       <button id="unbutt" className="questionsort" onClick={() => setSortOrder('Unanswered')}>Unanswered</button>
       <br id="liststart"/>
+      <hr style={{ borderTop: 'dotted 1px' }}/>
       <table className="questions">
         <tbody>{questionList}</tbody>
       </table>

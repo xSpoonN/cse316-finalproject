@@ -38,6 +38,7 @@
     display: inline-block;
     font-size: medium;
     background-color: cornflowerblue;
+    border-radius: 5px;
     color: white;
     border-color: cornflowerblue;
 }
@@ -75,6 +76,14 @@
 
 .qTD {
     padding: 15px;
+}
+
+.qANSVIEWS {
+    width: 10%;
+}
+
+.qTITLE {
+    width: 60%;
 }
 
 .qtag {

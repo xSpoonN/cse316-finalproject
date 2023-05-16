@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import '../stylesheets/login.css'
 const modle = require('../models/axiosmodel.js')
 
 export default function LoginPage ({ login }) {
@@ -39,16 +40,16 @@ export default function LoginPage ({ login }) {
 
   return (
     <div>
-      <h2>Login Page</h2>
+      <h2>Login</h2>
       <div>
-        <label>Email:</label>
+        <label>Email: </label>
         <input type="email" value={email} onChange={handleEmailChange} />
       </div>
       <div>
-        <label>Password:</label>
+        <label>Password: </label>
         <input type="password" value={password} onChange={handlePasswordChange} />
       </div>
-      <button onClick={handleLogin}>Log In</button>
+      <button onClick={handleLogin} className="loginbutt">Log In</button>
       {error && <p>{error}</p>}
     </div>
   )

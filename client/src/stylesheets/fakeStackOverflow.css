@@ -114,6 +114,7 @@ body { /* Applies this font globally */
     background-color: cornflowerblue;
     color: white;
     border-color: cornflowerblue;
+    border-radius:5px;
     right: 15px;
     float:right;
     top: 15px;
