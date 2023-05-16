@@ -64,7 +64,7 @@ export function getTags () {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -78,7 +78,7 @@ export function tagExists (tagName) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e); return false
+    console.error(e?.response); return false
   })
 }
 
@@ -95,7 +95,7 @@ export function addTag (tag, creator) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -148,7 +148,7 @@ export async function addAnswer (qid, ansby, text, email) {
     console.log('New answer id ' + response.data)
     newAnsId = response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 
   // Make sure we have an answer id
@@ -163,7 +163,7 @@ export async function addAnswer (qid, ansby, text, email) {
   }).then((response) => {
     console.log(response.data)
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -176,7 +176,7 @@ export function getAnswers () {
     /* console.log(response.data) */
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -194,7 +194,7 @@ export function getQuestions () { /* Gets all questions */
     /* console.log(response.data) */
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -217,7 +217,7 @@ export function getQuestionsByEmail (email) {
     /* console.log(response.data) */
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -231,7 +231,7 @@ export function getQuestion (qid) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -255,7 +255,7 @@ export function addQuestion (title, text, tags, user, email) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -264,7 +264,7 @@ export function deleteQuestion (qid) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -277,7 +277,7 @@ export function editQuestion (qid, title, text, tags) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -305,7 +305,7 @@ export function getCommentsByAID (aid) {
     /* console.log(response.data) */
     return response
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -319,7 +319,7 @@ export function getCommentByID (cid) {
     /* console.log(response.data) */
     return response
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -365,7 +365,7 @@ export function addUser (email, username, password) {
     console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -379,7 +379,7 @@ export function getUser (email) {
     // console.log(response.data)
     return response.data
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
   })
 }
 
@@ -397,7 +397,7 @@ export function loginUser (email, password) {
     /* console.log(response.data) */
     return response
   }).catch((e) => {
-    console.error(e)
+    console.error(e?.response)
     throw e
   })
 }

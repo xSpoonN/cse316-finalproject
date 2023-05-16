@@ -148,6 +148,7 @@ export default function Questions ({ searchQuery, fun, email, setError }) {
   useEffect(() => {
     async function fetchQuestions (qList) {
       if (!qList) qList = await modle.getQuestions()
+      if (!qList) setError({ msg: 'Failed to fetch questions', duration: 3000 })
       /* console.log(qList) */
       /* Sort Options */
       if (searchQuery) qList = await search(searchQuery)
