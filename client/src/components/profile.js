@@ -185,8 +185,12 @@ AnsweredQuestionList.propTypes = {
   showPrioAnswer: PropTypes.func.isRequired
 }
 
-function AdminList () {
+function AdminList ({ setError }) {
   const [userList, setUserList] = useState([])
+
+  const adminDelete = () => {
+    setError({ msg: 'You cannot delete an admin account!', duration: 3000 })
+  }
 
   const deleteUser = (id) => async () => {
     await modle.deleteUser(id)
@@ -228,13 +232,16 @@ function AdminList () {
             <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
             <td className="pTD paEmail">{user.email}</td>
             <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
-            <td className="pTD paDel">{!user.isadmin && <button className="userdelbutt" onClick={deleteUser(user._id)}>Delete</button>}</td>
+            <td className="pTD paDel"><button className="userdelbutt" onClick={user.isadmin ? adminDelete : deleteUser(user._id)}>Delete</button></td>
           </tr>
         ))}
       </tbody>
     </table>
     </>
   )
+}
+AdminList.propTypes = {
+  setError: PropTypes.func.isRequired
 }
 
 export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer, setError }) {
@@ -283,7 +290,7 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery,
       <>
         <br/><br/>
         <h3><u>Admin Panel</u></h3>
-        <AdminList/>
+        <AdminList setError={setError}/>
       </>
       }
     </>
