@@ -55,6 +55,29 @@ app.get('/questionEmail/:email', async (req, res) => {
   }
 })
 
+/* Get all questions answered by user with specified email */
+app.get('/questionsAnsweredBy/:email', async (req, res) => {
+  console.log('Questions Answered By GET request received')
+  try {
+    const user = await Users.findOne({ email: req.params.email }).exec()
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const questions = await Questions.find({}).populate({
+      path: 'answers',
+      match: { ans_by_email: user.email }
+    }).exec()
+
+    const answeredQuestions = questions.filter(question => question.answers.length > 0)
+
+    res.json(answeredQuestions)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Error retrieving questions', error: err.message })
+  }
+})
+
 /* Add new Question */
 app.post('/questions', async (req, res) => {
   console.log('Question POST request received')
@@ -97,23 +120,23 @@ app.post('/editquestion/:qid', async (req, res) => {
 
 /* Delete a question */
 app.post('/deletequestion/:qid', async (req, res) => {
-  console.log('Question DELETE request received');
+  console.log('Question DELETE request received')
   try {
-    const deletedQuestion = await Questions.findByIdAndRemove(req.params.qid);
+    const deletedQuestion = await Questions.findByIdAndRemove(req.params.qid)
     if (!deletedQuestion) {
-      return res.status(404).json({ message: 'Question not found' });
+      return res.status(404).json({ message: 'Question not found' })
     }
 
     // Delete associated answers
-    const answerIds = deletedQuestion.answers;
-    const commentIds = await Answers.distinct('comments', { _id: { $in: answerIds } });
-    await Comments.deleteMany({ _id: { $in: commentIds } });
-    await Answers.deleteMany({ _id: { $in: answerIds } });
+    const answerIds = deletedQuestion.answers
+    const commentIds = await Answers.distinct('comments', { _id: { $in: answerIds } })
+    await Comments.deleteMany({ _id: { $in: commentIds } })
+    await Answers.deleteMany({ _id: { $in: answerIds } })
 
-    res.json({ message: 'Question deleted' });
+    res.json({ message: 'Question deleted' })
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
   }
 })
 
@@ -221,18 +244,18 @@ app.get('/tags/:tagId', async (req, res) => {
 
 /* Get tags by User Email */
 app.get('/tagsby/:email', async (req, res) => {
-  console.log('Tags by Email GET request received');
+  console.log('Tags by Email GET request received')
   try {
-    const user = await Users.findOne({ email: req.params.email });
+    const user = await Users.findOne({ email: req.params.email })
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' })
     }
 
-    const tags = await Tags.find({ createdBy: user._id });
-    res.json(tags);
+    const tags = await Tags.find({ createdBy: user._id })
+    res.json(tags)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error retrieving tags', error: err.message });
+    console.error(err)
+    res.status(500).json({ message: 'Error retrieving tags', error: err.message })
   }
 })
 
@@ -280,7 +303,7 @@ app.post('/userLogin', async (req, res) => {
   console.log('User GET login request received')
   try {
     const user = await Users.findOne({email: req.body.email})
-    console.log(user);
+    console.log(user)
     if (!user) {
       return res.status(400).json({ message: 'Cannot find user' })
     } else {
@@ -416,31 +439,35 @@ app.post('/rep', async (req, res) => {
       if (user.reputation < 50) return res.status(400).json({ updated: updated, err: 'You do not have enough reputation' })
       if (rep > 0 && updated.upvoters.includes(reqUser._id)) { /* If user has already upvoted, remove that vote */
         updated.upvoters.splice(updated.upvoters.indexOf(reqUser._id), 1)
-        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] -= 1; user.reputation -= 5
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] -= 1
+        user.reputation -= 5
       } else if (rep < 0 && updated.downvoters.includes(reqUser._id)) { /* If user has already downvoted, remove that vote */
         updated.downvoters.splice(updated.downvoters.indexOf(reqUser._id), 1)
-        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += 1; user.reputation += 10
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += 1
+        user.reputation += 10
       } else {
         /* If user has voted in the other direction, remove that vote and add this one */
         const indIfInOther = updated[rep > 0 ? 'downvoters' : 'upvoters'].indexOf(reqUser._id)
         if (indIfInOther != -1) {
           updated[rep > 0 ? 'downvoters' : 'upvoters'].splice(indIfInOther, 1)
-          updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep; user.reputation += (rep > 0 ? 10 : -5)
+          updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep
+          user.reputation += (rep > 0 ? 10 : -5)
         }
 
         /* Add this vote */
         updated[rep > 0 ? 'upvoters' : 'downvoters'].push(reqUser._id)
-        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep; user.reputation += (rep > 0 ? 5 : -10)
+        updated[req.body.type == 'answer' ? 'reputation' : 'rep'] += rep
+        user.reputation += (rep > 0 ? 5 : -10)
       }
     } else if (req.body.type == 'comment') {
       updated = await Comments.findOneAndUpdate({_id: req.body.id}, {$inc: {rep: rep}})
       user = await Users.findOne({email: updated.cum_by})
       if (updated.voters.includes(reqUser._id)) {
         updated.voters.splice(updated.voters.indexOf(reqUser._id), 1)
-        updated.rep -= rep;
+        updated.rep -= rep
       } else {
         updated.voters.push(reqUser._id)
-        updated.rep += rep;
+        updated.rep += rep
       }
     } else {
       console.log('Invalid type')
