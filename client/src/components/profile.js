@@ -185,7 +185,7 @@ AnsweredQuestionList.propTypes = {
   showPrioAnswer: PropTypes.func.isRequired
 }
 
-function AdminList ({ setError }) {
+function AdminList ({ setError, setEmailOverride }) {
   const [userList, setUserList] = useState([])
   const [confirmDeleteId, setConfirmDeleteId] = useState('')
 
@@ -205,6 +205,10 @@ function AdminList ({ setError }) {
     } else {
       setConfirmDeleteId(id)
     }
+  }
+
+  const setUser = (email) => () => {
+    setEmailOverride(email)
   }
 
   useEffect(() => {
@@ -239,7 +243,7 @@ function AdminList ({ setError }) {
             <tr className="pRow" key={user._id}>
               <td className="pTD paInfo">{user.isadmin ? 'Admin' : 'User'}</td>
               <td className="pTD paScore">{user.reputation} reputation</td>
-              <td className="pTD paTitle"><p className='plink'>{user.username}</p></td>
+              <td className="pTD paTitle"><p className='plink' onClick={setUser(user.email)}>{user.username}</p></td>
               <td className="pTD paEmail">{user.email}</td>
               <td className="pTD paDate">{modle.formatDate(new Date(user.created_date_time))}</td>
               <td className="pTD paDel">
@@ -268,25 +272,27 @@ function AdminList ({ setError }) {
   )
 }
 AdminList.propTypes = {
-  setError: PropTypes.func.isRequired
+  setError: PropTypes.func.isRequired,
+  setEmailOverride: PropTypes.func.isRequired
 }
 
 export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery, showPrioAnswer, setError }) {
   const [user, setUser] = useState(null)
   const [showTags, setShowTags] = useState(false)
   const [showAnswers, setShowAnswers] = useState(false)
+  const [emailOverride, setEmailOverride] = useState('')
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const fetchedUser = await modle.getUser(email)
+        const fetchedUser = await modle.getUser(emailOverride || email)
         setUser(fetchedUser)
       } catch (error) {
         console.error('Error fetching user:', error)
       }
     }
     fetchUser()
-  }, [email])
+  }, [email, emailOverride])
 
   const toggleTags = () => {
     setShowTags(b => !b)
@@ -317,7 +323,7 @@ export default function Profile ({ email, setPage, setUpdateQid, setSearchQuery,
       <>
         <br/><br/>
         <h3><u>Admin Panel</u></h3>
-        <AdminList setError={setError}/>
+        <AdminList setError={setError} setEmailOverride={setEmailOverride}/>
       </>
       }
     </>
