@@ -117,7 +117,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError, pri
             <td className="aTD aCred"></td>
           </tr>
           {answers.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((answer) => (
-            <Answer key={answer._id} answer={answer} email={email} setError={setError}/>
+            <Answer key={answer._id} answer={answer} email={email} setError={setError} prioEmail={prioEmail}/>
           ))}
         </tbody>
       </table>
@@ -140,13 +140,14 @@ Answers.propTypes = {
   prioEmail: PropTypes.string.isRequired
 }
 
-export function Answer ({ answer, email, setError }) {
+export function Answer ({ answer, email, setError, prioEmail }) {
   const [comments, setComments] = useState([])
   const [commentData, setCommentData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [newComment, setNewComment] = useState('')
   const [answerData, setAnswerData] = useState(answer)
   const [voteStatus, setVoteStatus] = useState(0)
+  const [editText, setEditText] = useState(answer.text)
 
   const isFirstPage = currentPage === 1
   const isLastPage = comments === undefined ? true : currentPage * 3 >= comments.length
@@ -238,6 +239,17 @@ export function Answer ({ answer, email, setError }) {
     /* console.log(resp.updated.reputation) */
   }
 
+  const saveEditText = async () => {
+    if (!editText) return setError({ msg: 'Answer cannot be empty!', duration: 3000 })
+    try {
+      const resp = await modle.editAnswer(answer._id, editText)
+      if (resp?.err) setError({ msg: resp.err, duration: 3000 })
+      else setError({ msg: 'Answer saved!', duration: 3000, green: true })
+    } catch (error) {
+      console.error('Error editing answer:', error)
+    }
+  }
+
   const textWithLinks = replaceLinks(answer.text)
   return (
     <>
@@ -249,7 +261,13 @@ export function Answer ({ answer, email, setError }) {
           <br/>
           <button className={voteStatus === -1 ? 'avote downvoted' : 'avote'} onClick={handleDownvote}>▼</button>
         </td>
-        <td className="aTD aAns" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>
+        {prioEmail !== answer.ans_by_email && <td className="aTD aAns" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>}
+        {prioEmail === answer.ans_by_email &&
+          <td className="aTD aAns">
+            <textarea value={editText} onChange={(e) => setEditText(e.target.value)}/>
+            <button onClick={saveEditText}>Save</button>
+          </td>
+        }
         <td className="aTD aCred">
           <b>{answer.ans_by}</b> answered
           <br />
@@ -287,7 +305,8 @@ export function Answer ({ answer, email, setError }) {
 Answer.propTypes = {
   answer: PropTypes.object.isRequired,
   email: PropTypes.string.isRequired,
-  setError: PropTypes.func.isRequired
+  setError: PropTypes.func.isRequired,
+  prioEmail: PropTypes.string.isRequired
 }
 
 export function Comment ({ comment, email, setError }) {

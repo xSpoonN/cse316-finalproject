@@ -187,6 +187,28 @@ export async function addAnswer (qid, ansby, text, email) {
   })
 }
 
+// Edit answer
+export async function editAnswer (aid, text) {
+  return axios.post(`http://localhost:8000/editanswer/${aid}`, {
+    text
+  }).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
+// Delete answer
+export async function deleteAnswer (aid) {
+  return axios.post(`http://localhost:8000/deleteanswer/${aid}`).then((response) => {
+    console.log(response.data)
+    return response.data
+  }).catch((e) => {
+    console.error(e)
+  })
+}
+
 /**
  * Gets all answers
  * @returns {Promise<Array>} Returns an array of all answers

@@ -135,3 +135,7 @@ body { /* Applies this font globally */
 .active {
     background-color: rgb(189, 189, 189);
 }
+
+.egreen {
+    background-color: green;
+}
