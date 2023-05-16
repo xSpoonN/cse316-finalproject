@@ -5,6 +5,13 @@
   width: 100%;
 }
 
+#adminTable {
+  border-collapse: collapse;
+  table-layout: fixed;
+  padding: 10px;
+  width: 100%;
+}
+
 .plink {
   text-decoration: none;
   color: blue;
@@ -39,4 +46,47 @@
   vertical-align: middle;
   text-align: right;
   padding-right:40px
+}
+
+.paInfo {
+  width: 7%;
+  overflow-wrap: break-word;
+}
+
+.paScore {
+  width: 10%;
+  overflow-wrap: break-word;
+}
+
+.paTitle {
+  width: 20%;
+  overflow-wrap: break-word;
+}
+
+.paEmail {
+  width: 20%;
+  overflow-wrap: break-word;
+}
+
+.paDate {
+  width: 20%;
+  vertical-align: middle;
+  text-align: right;
+  padding-right:40px
+}
+
+.paDel {
+  width: 10%;
+  overflow-wrap: break-word;
+}
+
+.userdelbutt {
+  padding: 6px;
+  position: relative;
+  font-size: medium;
+  background-color: crimson;
+  color: white;
+  border-color: crimson;
+  cursor:pointer;
+  bottom: 80%
 }

@@ -412,6 +412,15 @@ export function getUser (email) {
   })
 }
 
+export function getAllUsers () {
+  return axios.get('http://localhost:8000/users').then((response) => {
+    /* console.log(response.data) */
+    return response.data
+  }).catch((e) => {
+    console.error(e?.response)
+  })
+}
+
 /**
  * Logs in a user
  * @param {string} email
