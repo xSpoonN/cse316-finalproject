@@ -16,6 +16,8 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError, pri
   const [currentPage, setCurrentPage] = useState(1)
   const [voteStatus, setVoteStatus] = useState(0)
 
+  const [update, setUpdate] = useState(0)
+
   const isFirstPage = currentPage === 1
   const isLastPage = answers === undefined ? true : currentPage * 5 >= answers.length
 
@@ -41,7 +43,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError, pri
       // modle.addViews(qid)
     }
     fetchData()
-  }, [qid, currentPage])
+  }, [qid, currentPage, update])
 
   useEffect(() => {
     async function fetchVoteStatus () {
@@ -117,7 +119,7 @@ export default function Answers ({ qid, gotoPostAnswerPage, email, setError, pri
             <td className="aTD aCred"></td>
           </tr>
           {answers.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((answer) => (
-            <Answer key={answer._id} answer={answer} email={email} setError={setError} prioEmail={prioEmail}/>
+            <Answer key={answer._id} answer={answer} email={email} setError={setError} prioEmail={prioEmail} setUpdate={setUpdate}/>
           ))}
         </tbody>
       </table>
@@ -140,7 +142,7 @@ Answers.propTypes = {
   prioEmail: PropTypes.string.isRequired
 }
 
-export function Answer ({ answer, email, setError, prioEmail }) {
+export function Answer ({ answer, email, setError, prioEmail, setUpdate }) {
   const [comments, setComments] = useState([])
   const [commentData, setCommentData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -250,6 +252,17 @@ export function Answer ({ answer, email, setError, prioEmail }) {
     }
   }
 
+  const deleteAnswer = (id) => async () => {
+    try {
+      const resp = await modle.deleteAnswer(id)
+      if (resp?.err) setError({ msg: resp.err, duration: 3000 })
+      setUpdate(u => u + 1)
+      // else setError({ msg: 'Answer deleted!', duration: 3000, green: true })
+    } catch (error) {
+      console.error('Error deleting answer:', error)
+    }
+  }
+
   const textWithLinks = replaceLinks(answer.text)
   return (
     <>
@@ -266,6 +279,7 @@ export function Answer ({ answer, email, setError, prioEmail }) {
           <td className="aTD aAns">
             <textarea value={editText} onChange={(e) => setEditText(e.target.value)}/>
             <button onClick={saveEditText}>Save</button>
+            <button onClick={deleteAnswer(answer._id)}>Delete</button>
           </td>
         }
         <td className="aTD aCred">
@@ -306,7 +320,8 @@ Answer.propTypes = {
   answer: PropTypes.object.isRequired,
   email: PropTypes.string.isRequired,
   setError: PropTypes.func.isRequired,
-  prioEmail: PropTypes.string.isRequired
+  prioEmail: PropTypes.string.isRequired,
+  setUpdate: PropTypes.func.isRequired
 }
 
 export function Comment ({ comment, email, setError }) {
