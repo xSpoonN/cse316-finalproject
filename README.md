@@ -12,5 +12,5 @@ Add design docs in *images/*
 
 ## Team Member 2 Contribution
 ### James Leonardi - 113332225 - <james.leonardi@stonybrook.edu>
-> **** - 
+> **Landing Page, Login/Signup Pages, Profile Pages (and all related components), Admin Profiles** - showing/editing/deleting asked questions, showing answered questions, showing/editing/deleting answers, deleting users, showing/editing/deleting tags
 >
