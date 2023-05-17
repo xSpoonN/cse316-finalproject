@@ -11,8 +11,6 @@ if (!userArgs[0] || !userArgs[1]) {
 const adminEmail = userArgs[0]
 let adminPassword = userArgs[1]
 var adminUser
-adminPassword = bcrypt.hashSync(adminPassword, 10)
-
 const Tag = require('./models/tags')
 const User = require('./models/users')
 const Comment = require('./models/comments')
