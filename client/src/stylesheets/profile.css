@@ -90,3 +90,14 @@
   cursor:pointer;
   bottom: 80%
 }
+
+.usercanbutt {
+  padding: 6px;
+  position: relative;
+  font-size: medium;
+  background-color: cornflowerblue;
+  color: white;
+  border-color: cornflowerblue;
+  cursor:pointer;
+  bottom: 80%
+}

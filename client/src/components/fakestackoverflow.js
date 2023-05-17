@@ -169,7 +169,7 @@ export default function fakeStackOverflow () {
   const [searchQuery, setSearchQuery] = useState('')
   const [activePage, setActivePage] = useState('Landing')
   const [email, setEmail] = useState(undefined)
-  const [error, setError] = useState({ msg: '', duration: 0 })
+  const [error, setError] = useState({ msg: '', duration: 0, green: false })
   const [timeoutFunc, setTimeoutFunc] = useState(undefined)
 
   const logout = () => {
@@ -211,7 +211,7 @@ export default function fakeStackOverflow () {
         className="header"
       />}
       {(
-        <div className={`error ${error.msg ? 'fade-in' : 'fade-out'}`}>
+        <div className={`error ${error.msg ? 'fade-in' : 'fade-out'} ${error.green ? 'egreen' : ''}`}>
           {error.msg}
         </div>
       )}

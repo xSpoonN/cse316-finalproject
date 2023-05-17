@@ -209,6 +209,56 @@ app.post('/answers', async (req, res) => {
   }
 })
 
+/* Edit Answer */
+app.post('/editanswer/:aid', async (req, res) => {
+  const aid = req.params.aid
+  const text = req.body.text
+
+  try {
+    const updatedAnswer = await Answers.findByIdAndUpdate(
+      aid,
+      { text },
+      { new: true }
+    )
+
+    if (!updatedAnswer) {
+      return res.status(404).json({ message: 'Answer not found' })
+    }
+
+    res.json({ message: 'Answer updated', updatedAnswer })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
+app.post('/deleteanswer/:aid', async (req, res) => {
+  const aid = req.params.aid
+
+  try {
+    // Find the answer to be deleted
+    const answer = await Answers.findById(aid)
+
+    if (!answer) {
+      return res.status(404).json({ message: 'Answer not found' })
+    }
+
+    // Delete the associated comments
+    await Comments.deleteMany({ _id: { $in: answer.comments } })
+
+    // Delete the answer from questions.answers array
+    await Questions.updateMany({}, { $pull: { answers: aid } })
+
+    // Delete the answer
+    await answer.deleteOne()
+
+    res.json({ message: 'Answer deleted' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
 /* Get All Answers */
 app.get('/answers', async (req, res) => {
   try {
