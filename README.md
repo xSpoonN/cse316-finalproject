@@ -9,6 +9,7 @@ Make a MongoDB database called fake_so and start it.
 A script called server/init.js is included in the repository that will be run to create initial data in our schema. This script will be run using Node before starting the server. The initial data contains the user profile for admin. The username and password for an admin user must be provided as the first argument to server/init.js. These credentials are used to create a user profile for admin in the database.
 
 Start the express server with node server.js
+
 Start the client with npm start
 
 Navigate to localhost:3000
