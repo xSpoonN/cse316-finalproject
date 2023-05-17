@@ -256,8 +256,8 @@ export function Answer ({ answer, email, setError, prioEmail, setUpdate }) {
     try {
       const resp = await modle.deleteAnswer(id)
       if (resp?.err) setError({ msg: resp.err, duration: 3000 })
+      else setError({ msg: 'Answer deleted!', duration: 3000, green: true })
       setUpdate(u => u + 1)
-      // else setError({ msg: 'Answer deleted!', duration: 3000, green: true })
     } catch (error) {
       console.error('Error deleting answer:', error)
     }
@@ -277,9 +277,9 @@ export function Answer ({ answer, email, setError, prioEmail, setUpdate }) {
         {prioEmail !== answer.ans_by_email && <td className="aTD aAns" dangerouslySetInnerHTML={{ __html: textWithLinks }}/>}
         {prioEmail === answer.ans_by_email &&
           <td className="aTD aAns">
-            <textarea value={editText} onChange={(e) => setEditText(e.target.value)}/>
-            <button onClick={saveEditText}>Save</button>
-            <button onClick={deleteAnswer(answer._id)}>Delete</button>
+            <textarea className="aeditText" value={editText} onChange={(e) => setEditText(e.target.value)} />
+            <button className="aeditSave" onClick={saveEditText}>Save</button>
+            <button className="aeditDelete" onClick={deleteAnswer(answer._id)}>Delete</button>
           </td>
         }
         <td className="aTD aCred">

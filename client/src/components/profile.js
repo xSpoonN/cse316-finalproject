@@ -84,6 +84,7 @@ function UserQuestionList ({ email, setPage, setUpdateQid }) {
         {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
           <UserQuestion key={question._id} question={question} setPage={setPage} setUpdateQid={setUpdateQid}/>
         ))}
+        {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions asked...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
     <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
@@ -173,6 +174,7 @@ function AnsweredQuestionList ({ email, showPrioAnswer }) {
         {questionList.slice((currentPage - 1) * 5, (currentPage - 1) * 5 + 5).map((question) => (
           <AnsweredQuestion key={question._id} email={email} question={question} showPrioAnswer={showPrioAnswer}/>
         ))}
+        {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions answered...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
     <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>

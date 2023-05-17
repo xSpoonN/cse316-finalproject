@@ -211,6 +211,7 @@ app.post('/answers', async (req, res) => {
 
 /* Edit Answer */
 app.post('/editanswer/:aid', async (req, res) => {
+  console.log('Answer EDIT request received')
   const aid = req.params.aid
   const text = req.body.text
 
@@ -233,6 +234,7 @@ app.post('/editanswer/:aid', async (req, res) => {
 })
 
 app.post('/deleteanswer/:aid', async (req, res) => {
+  console.log('Answer DELETE request received')
   const aid = req.params.aid
 
   try {
