@@ -200,3 +200,28 @@
     border-radius:5px;
     border-color: cornflowerblue;
 }
+
+.aeditText {
+    width: 100%;
+    resize: vertical;
+}
+  
+.aeditSave {
+    margin-top: 10px; /* Add margin to create space between buttons */
+    padding: 6px;
+    font-size: medium;
+    background-color: cornflowerblue;
+    color: white;
+    border-color: cornflowerblue;
+    cursor: pointer;
+}
+  
+.aeditDelete {
+    padding: 6px;
+    font-size: medium;
+    background-color: crimson;
+    color: white;
+    border-color: crimson;
+    cursor: pointer;
+}
+  
