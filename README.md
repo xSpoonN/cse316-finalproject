@@ -7,7 +7,7 @@ Add design docs in *images/*
 
 ## Team Member 1 Contribution
 ### Kevin Tao - 170154879 - <kevin.tao@stonybrook.edu>
-> **Pages, Answer Page Tags, Comments, Reputation, Sessions, Error messages** - Updated lists to show pages of items at a time, updated the answers page, added comments, implemented the reputation system for questions/answers/comments, set up sessions, added the error message banner.
+> **Pages, Answer Page Tags, Comments, Reputation, Sessions, Error messages** - Updated lists to show pages of items at a time, updated the answers page, added comments, implemented the reputation system for questions/answers/comments, set up sessions, added the error message banner, wrote the init script, drew the UML diagram.
 >
 
 ## Team Member 2 Contribution
