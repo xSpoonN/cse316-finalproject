@@ -103,8 +103,8 @@ function UserQuestionList ({ email, setPage, setUpdateQid }) {
         {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions asked...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
-    <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
-    <button onClick={handleNextPage} disabled={isLastPage}>Next</button>
+    <button className="pprevbutt" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+    <button className="pnextbutt" onClick={handleNextPage} disabled={isLastPage}>Next</button>
     </>
   )
 }
@@ -208,8 +208,8 @@ function AnsweredQuestionList ({ email, showPrioAnswer }) {
         {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions answered...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
-    <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
-    <button onClick={handleNextPage} disabled={isLastPage}>Next</button>
+    <button className="pprevbutt" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+    <button className="pnextbutt" onClick={handleNextPage} disabled={isLastPage}>Next</button>
     </>
   )
 }

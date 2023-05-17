@@ -101,3 +101,26 @@
   cursor:pointer;
   bottom: 80%
 }
+
+.pprevbutt {
+  background-color: cornflowerblue;
+  color: white;
+  border-radius:5px;
+  border-color: cornflowerblue
+}
+.pprevbutt:disabled {
+  background-color: rgb(163, 163, 163);
+  color: white;
+  border-color: rgb(163, 163, 163)
+}
+.pnextbutt {
+  background-color: cornflowerblue;
+  color: white;
+  border-radius:5px;
+  border-color: cornflowerblue
+}
+.pnextbutt:disabled {
+  background-color: rgb(163, 163, 163);
+  color: white;
+  border-color: rgb(163, 163, 163)
+}
