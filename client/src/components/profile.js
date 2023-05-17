@@ -7,6 +7,20 @@ const modle = require('../models/axiosmodel.js')
 /* Question entry into the table */
 function UserQuestion ({ question, setPage, setUpdateQid }) {
   const [answers, setAnswers] = useState([])
+  const [tagNames, setTagNames] = useState([])
+  const tagList = question.tags
+
+  useEffect(() => {
+    async function fetchTagNames () {
+      const names = await Promise.all(tagList.map(async (tag) => {
+        const name = await modle.getTagName(tag)
+        return name
+      }))
+      setTagNames(names)
+    }
+    fetchTagNames()
+  }, [tagList])
+
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
@@ -34,6 +48,8 @@ function UserQuestion ({ question, setPage, setUpdateQid }) {
         <td className="pTD pTitle">
           <a className='plink' onClick={setAPage(question._id)}>
             {question.title}
+            <br/>
+            {tagNames.map((name, i) => (<button key={tagList[i]} className="qtag">{name}</button>))}
           </a>
         </td>
         <td className="pTD pDate">{modle.formatDate(new Date(question.ask_date_time))}</td>
@@ -87,8 +103,8 @@ function UserQuestionList ({ email, setPage, setUpdateQid }) {
         {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions asked...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
-    <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
-    <button onClick={handleNextPage} disabled={isLastPage}>Next</button>
+    <button className="pprevbutt" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+    <button className="pnextbutt" onClick={handleNextPage} disabled={isLastPage}>Next</button>
     </>
   )
 }
@@ -101,6 +117,19 @@ UserQuestionList.propTypes = {
 /* Question entry into the table */
 function AnsweredQuestion ({ email, question, showPrioAnswer }) {
   const [answers, setAnswers] = useState([])
+  const [tagNames, setTagNames] = useState([])
+  const tagList = question.tags
+
+  useEffect(() => {
+    async function fetchTagNames () {
+      const names = await Promise.all(tagList.map(async (tag) => {
+        const name = await modle.getTagName(tag)
+        return name
+      }))
+      setTagNames(names)
+    }
+    fetchTagNames()
+  }, [tagList])
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
@@ -124,6 +153,8 @@ function AnsweredQuestion ({ email, question, showPrioAnswer }) {
         <td className="pTD pTitle">
           <a className='plink' onClick={showPrioAnswer(question._id, email)}>
             {question.title}
+            <br/>
+            {tagNames.map((name, i) => (<button key={tagList[i]} className="qtag">{name}</button>))}
           </a>
         </td>
         <td className="pTD pDate">{modle.formatDate(new Date(question.ask_date_time))}</td>
@@ -177,8 +208,8 @@ function AnsweredQuestionList ({ email, showPrioAnswer }) {
         {questionList.length === 0 && <tr className="pRow"><td className="pTD pScore"></td><td className="pTD pInfo"></td><td className="pTD pTitle"><i>No questions answered...</i></td><td className="pTD pDate"></td></tr>}
       </tbody>
     </table>
-    <button onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
-    <button onClick={handleNextPage} disabled={isLastPage}>Next</button>
+    <button className="pprevbutt" onClick={handlePrevPage} disabled={isFirstPage}>Prev</button>
+    <button className="pnextbutt" onClick={handleNextPage} disabled={isLastPage}>Next</button>
     </>
   )
 }
